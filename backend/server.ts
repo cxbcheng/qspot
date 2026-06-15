@@ -31,6 +31,7 @@ if (!FRONTEND_URI) {
 
 const app = express();
 
+// Allow frontend and backend connection
 app.use(
     cors({
         origin: FRONTEND_URI,
@@ -56,13 +57,10 @@ app.get('/login', (_req, res) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
-        maxAge: 5 * 60 * 1000
+        maxAge: 300000 // 300 seconds expiry
     });
 
-    const scope = [
-        'user-read-private',
-        'user-read-email'
-    ].join(' ');
+    const scope = 'user-read-private user-read-email';
 
     const params = new URLSearchParams({
         response_type: 'code',
@@ -73,7 +71,7 @@ app.get('/login', (_req, res) => {
     });
 
     res.redirect(
-        `https://accounts.spotify.com/authorize?${params.toString()}`
+    `https://accounts.spotify.com/authorize?${params.toString()}`
     );
 });
 
@@ -98,7 +96,7 @@ app.get('/callback', async (req, res) => {
         return res.redirect(
             `${FRONTEND_URI}/#${new URLSearchParams({
                 error: 'state_mismatch'
-            }).toString()}`
+            })}`
         );
     }
 
@@ -244,6 +242,6 @@ app.get('/health', (_req, res) => {
 
 app.listen(PORT, () => {
     console.log(
-        `Spotify backend listening on port ${PORT}`
+        `Backend listening on port ${PORT}`
     );
 });

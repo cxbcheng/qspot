@@ -13,5 +13,7 @@
     "jsx": "react-jsx",
     "strict": true
   },
-  "include": ["src"]
+  "include": [
+    "frontend/src"
+  ]
 }

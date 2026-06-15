@@ -16,8 +16,8 @@
   "description": "A Spotify companion app that enhances playlists with smart classical-music shuffling, composition-aware queueing, and integrated scores, tabs, and sheet music for supported tracks.",
   "main": "index.js",
   "scripts": {
-    "client": "vite",
-    "server": "tsx server/server.ts",
+    "client": "vite --host 127.0.0.1",
+    "server": "tsx backend/server.ts",
     "dev": "concurrently \"npm run client\" \"npm run server\"",
     "build": "tsc && vite build",
     "preview": "vite preview"
