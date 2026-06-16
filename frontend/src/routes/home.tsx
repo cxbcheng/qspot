@@ -1,25 +1,27 @@
-import { redirect } from "react-router";
+import {redirect} from "react-router";
+import {useLoaderData} from "react-router-dom";
+import {UserProfile} from "../../../shared/types/UserProfile";
 
 export async function loader() {
     const response: Response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URI}/api/me`,
-        {
+        `${import.meta.env.VITE_BACKEND_URI}/api/me`, {
             credentials: "include",
         }
     );
 
     if (response.status === 401) {
-        return redirect(
-            `${import.meta.env.VITE_BACKEND_URI}/login`
-        );
+        return redirect(`${import.meta.env.VITE_BACKEND_URI}/login`);
     }
 
     return response.json();
 }
 
-export default function Home() {
-    console.log("Home page");
+export function Component() {
+    const profile: UserProfile = useLoaderData<UserProfile>();
+
     return (
-        <div>Home page</div>
+        <div>
+            <h1>Welcome, {profile.display_name}</h1>
+        </div>
     );
 }

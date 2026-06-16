@@ -3,6 +3,17 @@ import cors from 'cors';
 import crypto from 'crypto';
 import session from 'express-session';
 import 'dotenv/config';
+import {getProfile} from "./services/spotify";
+
+declare module 'express-session' {
+    interface SessionData {
+        state?: string;
+        spotify?: {
+            access_token: string;
+            refresh_token: string;
+        };
+    }
+}
 
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
@@ -11,7 +22,6 @@ const REDIRECT_URI = process.env.REDIRECT_URI;
 const FRONTEND_URI = process.env.FRONTEND_URI;
 
 const PORT = Number(process.env.PORT) || 8888;
-const stateKey = 'spotify_auth_state';
 
 if (!CLIENT_ID) {
     throw new Error('SPOTIFY_CLIENT_ID is missing');
@@ -90,7 +100,8 @@ app.get('/login', (req, res) => {
 
 /**
  * GET /callback
- * Spotify redirects here after login
+ * Spotify redirects here after login.
+ * Server stores token data in express-session.
  */
 app.get('/callback', async (req, res) => {
     const code =
@@ -103,7 +114,7 @@ app.get('/callback', async (req, res) => {
             ? req.query.state
             : null;
 
-    const storedState = req.cookies?.[stateKey] ?? null;
+    const storedState = req.session.state ?? null;
 
     if (!state || state !== storedState) {
         return res.redirect(
@@ -121,14 +132,10 @@ app.get('/callback', async (req, res) => {
         );
     }
 
-    res.clearCookie(stateKey, {
-        httpOnly: true,
-        sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production'
-    });
+    delete req.session.state;
 
     try {
-        const tokenResponse = await fetch(
+        const tokenResponse: Response = await fetch(
             'https://accounts.spotify.com/api/token',
             {
                 method: 'POST',
@@ -164,11 +171,15 @@ app.get('/callback', async (req, res) => {
             );
         }
 
+        const spotifyTokenData = {
+            access_token: body.access_token,
+            refresh_token: body.refresh_token,
+        };
+
+        req.session.spotify = spotifyTokenData;
+
         return res.redirect(
-            `${FRONTEND_URI}/#${new URLSearchParams({
-                access_token: body.access_token,
-                refresh_token: body.refresh_token
-            }).toString()}`
+            `${FRONTEND_URI}/#${new URLSearchParams(spotifyTokenData).toString()}`
         );
     } catch (error) {
         console.error('Callback error:', error);
@@ -245,6 +256,18 @@ app.post('/refresh_token', async (req, res) => {
             error: 'failed_to_refresh_token'
         });
     }
+});
+
+/**
+ * GET /api/me
+ * Return user profile data if authenticated, 401 status otherwise.
+ */
+app.get("/api/me", async (req, res) => {
+    if (!req.session.spotify) return res.status(401).json({});
+    const accessToken: string = req.session.spotify.access_token;
+
+    const data = await getProfile(accessToken);
+    res.json(data);
 });
 
 app.get('/health', (_req, res) => {
