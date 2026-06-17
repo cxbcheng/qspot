@@ -3,7 +3,8 @@ import cors from 'cors';
 import crypto from 'crypto';
 import session from 'express-session';
 import 'dotenv/config';
-import {getProfile} from "./services/spotify";
+import {getProfile, getUserPlaylists} from "./services/spotify";
+import {UserProfile} from "../shared/types/UserProfile";
 
 declare module 'express-session' {
     interface SessionData {
@@ -83,6 +84,10 @@ app.get('/login', (req, res) => {
     const scope = [
         'user-read-private',
         'user-read-email',
+        'user-read-playback-state',
+        'playlist-read-private',
+        'playlist-modify-private',
+        'playlist-modify-public',
     ].join(' ');
 
     const params = new URLSearchParams({
@@ -118,7 +123,7 @@ app.get('/callback', async (req, res) => {
 
     if (!state || state !== storedState) {
         return res.redirect(
-            `${FRONTEND_URI}/#${new URLSearchParams({
+            `${FRONTEND_URI}/login?${new URLSearchParams({
                 error: 'state_mismatch'
             })}`
         );
@@ -126,7 +131,7 @@ app.get('/callback', async (req, res) => {
 
     if (!code) {
         return res.redirect(
-            `${FRONTEND_URI}/#${new URLSearchParams({
+            `${FRONTEND_URI}/login?${new URLSearchParams({
                 error: 'missing_code'
             }).toString()}`
         );
@@ -165,27 +170,25 @@ app.get('/callback', async (req, res) => {
             );
 
             return res.redirect(
-                `${FRONTEND_URI}/#${new URLSearchParams({
+                `${FRONTEND_URI}/login?${new URLSearchParams({
                     error: 'invalid_token'
                 }).toString()}`
             );
         }
 
-        const spotifyTokenData = {
+        req.session.spotify = {
             access_token: body.access_token,
             refresh_token: body.refresh_token,
         };
 
-        req.session.spotify = spotifyTokenData;
-
         return res.redirect(
-            `${FRONTEND_URI}/#${new URLSearchParams(spotifyTokenData).toString()}`
+            `${FRONTEND_URI}/`
         );
     } catch (error) {
         console.error('Callback error:', error);
 
         return res.redirect(
-            `${FRONTEND_URI}/#${new URLSearchParams({
+            `${FRONTEND_URI}/login?${new URLSearchParams({
                 error: 'server_error'
             }).toString()}`
         );
@@ -260,13 +263,25 @@ app.post('/refresh_token', async (req, res) => {
 
 /**
  * GET /api/me
- * Return user profile data if authenticated, 401 status otherwise.
+ * Return current user profile data if authenticated, 401 status otherwise.
  */
 app.get("/api/me", async (req, res) => {
     if (!req.session.spotify) return res.status(401).json({});
     const accessToken: string = req.session.spotify.access_token;
 
-    const data = await getProfile(accessToken);
+    const data: UserProfile = await getProfile(accessToken);
+    res.json(data);
+});
+
+/**
+ * GET /api/me/playlists
+ * Return current user's playlists if authenticated, 401 status otherwise.
+ */
+app.get("/api/me/playlists", async (req, res) => {
+    if (!req.session.spotify) return res.status(401).json({});
+    const accessToken: string = req.session.spotify.access_token;
+
+    const data = await getUserPlaylists(accessToken);
     res.json(data);
 });
 

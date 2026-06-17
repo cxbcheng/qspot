@@ -11,4 +11,14 @@ export default [
             },
         ],
     },
+    {
+        path: "/login",
+        Component: Root,
+        children: [
+            {
+                index: true,
+                lazy: () => import("./routes/login"),
+            }
+        ]
+    }
 ];

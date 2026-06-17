@@ -10,7 +10,7 @@ export async function loader() {
     );
 
     if (response.status === 401) {
-        return redirect(`${import.meta.env.VITE_BACKEND_URI}/login`);
+        return redirect('/login');
     }
 
     return response.json();
@@ -18,6 +18,7 @@ export async function loader() {
 
 export function Component() {
     const profile: UserProfile = useLoaderData<UserProfile>();
+    console.log(profile);
 
     return (
         <div>
