@@ -2,6 +2,7 @@ import {redirect} from "react-router";
 import {useLoaderData} from "react-router-dom";
 import {UserProfile} from "../../../shared/types/UserProfile";
 import {Navbar} from "../components/Navbar.tsx";
+import {PlaylistGrid} from "../components/PlaylistGrid.tsx";
 
 interface ResponseObject {
     profile: UserProfile;
@@ -37,6 +38,9 @@ export function Component() {
     return (
         <>
             <Navbar profile={res.profile}/>
+            <main>
+                <PlaylistGrid playlists={res.playlists.items} />
+            </main>
         </>
     );
 }

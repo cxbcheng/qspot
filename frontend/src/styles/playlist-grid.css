@@ -1,0 +1,35 @@
+.playlist-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(180px, 1fr)
+        );
+
+    gap: 1rem;
+}
+
+.playlist-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.playlist-card__image {
+    width: 100%;
+    aspect-ratio: 1;
+
+    object-fit: cover;
+
+    border-radius: 8px;
+}
+
+.playlist-card h3,
+.playlist-card p {
+    margin: 0;
+}
+
+.playlist-card:hover {
+    opacity: 0.85;
+}
