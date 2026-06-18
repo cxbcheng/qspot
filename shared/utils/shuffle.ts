@@ -4,7 +4,7 @@ import {PlaylistItem} from "../types/Playlist.ts";
 const opusRegex = /\bOp\.?\s*(\d+)/i;
 const noRegex = /\bNo\.?\s*(\d+)/i;
 const catalogRegex = /\b((?:BWV|HWV|RV|KV?|D|S|WWV|Op|Hob)\.?)\s+([IVX0-9]+[a-z]?(?::[0-9]+)?(?:,?\s*No\.?\s*[0-9]+)?)\b/;
-
+const movementRegex = /\b(Mov(?:ement)?\.?\s*(?:[IVX]+|\d+)|[IVX]{1,4})\s*[.\-:]\s+([A-Z].*)/;
 /**
  * A list of identifiers used to separate partitions from one another.
  * Each Partition also keeps an array of all the items in it.
@@ -32,6 +32,7 @@ interface ClassicalHeuristics {
     catalogNumber?: string;
     albumId: string;
     workTitle?: string;
+    isMovement: boolean;
 }
 
 /**
@@ -117,6 +118,7 @@ function classicallyEquivalent(a: PartitionDiscriminators, b: PartitionDiscrimin
             catalogNumber: catalogRegexMatches?.[2],
             composer: track.primaryArtistName,
             workTitle: nameSplits.length > 1 ? nameSplits[0] : undefined,
+            isMovement: !!track.name.match(movementRegex),
         };
     };
 
@@ -135,5 +137,5 @@ function classicallyEquivalent(a: PartitionDiscriminators, b: PartitionDiscrimin
 
     // Fallback: the composer is the same, but we have lots of missing metadata
     // e.g. tracks with movement-only titles
-    return chA.albumId === chB.albumId;
+    return chA.albumId === chB.albumId && chA.isMovement && chB.isMovement;
 }
