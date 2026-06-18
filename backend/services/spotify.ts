@@ -178,3 +178,43 @@ export async function copyPlaylistImage(
     const base64Image = buffer.toString("base64");
     await setPlaylistImage(accessToken, destinationPlaylistId, base64Image);
 }
+
+export async function addToQueue(accessToken: string, uri: string): Promise<void> {
+    const response = await fetch(
+        `https://api.spotify.com/v1/me/player/queue?uri=${encodeURIComponent(uri)}`, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        }
+    );
+
+    if (!response.ok) {
+        const error: string = await response.text();
+        throw new Error(`Spotify returned ${response.status}: ${error}`);
+    }
+}
+
+export async function addTracksToQueue(accessToken: string, uris: string[]): Promise<void> {
+    for (const uri of uris) {
+        await addToQueue(accessToken, uri);
+    }
+}
+
+export async function startPlayback(accessToken: string, uris: string[]) {
+    if (!accessToken) throw new Error("No access token");
+
+    const response: Response = await fetch(`https://api.spotify.com/v1/me/player/play`, {
+        method: "PUT",
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({uris}),
+    });
+
+    if (!response.ok) {
+        const error: string = await response.text();
+        throw new Error(`Spotify returned ${response.status}: ${error}`);
+    }
+}

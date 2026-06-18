@@ -8,10 +8,9 @@ import {
     createPlaylist,
     getPlaylist,
     getProfile,
-    getUserPlaylists
+    getUserPlaylists, startPlayback
 } from "./services/spotify";
 import {UserProfile} from "../shared/types/UserProfile";
-import {classicalShuffle} from "../shared/utils/shuffle";
 
 declare module 'express-session' {
     interface SessionData {
@@ -92,9 +91,11 @@ app.get('/login', (req, res) => {
         'user-read-private',
         'user-read-email',
         'playlist-read-private',
+        'playlist-read-collaborative',
         'playlist-modify-private',
-        'playlist-modify-public',
         'ugc-image-upload',
+        'user-modify-playback-state',
+        'user-read-playback-state',
     ].join(' ');
 
     const params = new URLSearchParams({
@@ -329,49 +330,69 @@ app.get("/api/playlists/:playlistId", async (req, res) => {
  * Creates new, shuffled playlist from the original playlist.
  */
 app.post("/api/playlists/:playlistId/create-shuffle", async (req, res) => {
-        if (!req.session.spotify) return res.status(401).json({
-            error: "unauthorized",
+    if (!req.session.spotify) return res.status(401).json({
+        error: "unauthorized",
+    });
+
+    // A predetermined shuffle order (list of playlist item URIs)
+    const uris = req.body.uris;
+
+    // Playlist to copy from
+    const playlistId = req.params.playlistId;
+
+    try {
+        const accessToken = req.session.spotify.access_token;
+        const playlist = await getPlaylist(accessToken, playlistId);
+
+        const newPlaylist = await createPlaylist(
+            accessToken,
+            `${playlist.name} (shuffled)`,
+            playlist.description,
+            false
+        );
+
+        await copyPlaylistImage(
+            accessToken,
+            playlist.id,
+            newPlaylist.id,
+        );
+
+        await addTracksToPlaylist(accessToken, newPlaylist.id, uris);
+
+        return res.json({
+            playlistId: newPlaylist.id,
+            playlistUrl: newPlaylist.external_urls.spotify,
         });
+    } catch (error) {
+        console.error(error);
 
-        // A predetermined shuffle order (list of playlist item URIs)
-        const uris = req.body.uris;
-
-        // Playlist to copy from
-        const playlistId = req.params.playlistId;
-
-        try {
-            const accessToken = req.session.spotify.access_token;
-            const playlist = await getPlaylist(accessToken, playlistId);
-
-            const newPlaylist = await createPlaylist(
-                accessToken,
-                `${playlist.name} (shuffled)`,
-                playlist.description,
-                false
-            );
-
-            await copyPlaylistImage(
-                accessToken,
-                playlist.id,
-                newPlaylist.id,
-            );
-
-            await addTracksToPlaylist(accessToken, newPlaylist.id, uris);
-
-            return res.json({
-                playlistId: newPlaylist.id,
-                playlistUrl: newPlaylist.external_urls.spotify,
-            });
-        } catch (error) {
-            console.error(error);
-
-            return res.status(500).json({
-                error:
-                    "failed_to_shuffle_playlist",
-            });
-        }
+        return res.status(500).json({
+            error:
+                "failed_to_shuffle_playlist",
+        });
     }
-);
+});
+
+app.put("/api/me/player/play", async (req, res) => {
+    if (!req.session.spotify) return res.status(401).json({
+        error: "unauthorized",
+    });
+
+    // A predetermined shuffle order (list of playlist item URIs)
+    const uris = req.body.uris;
+
+    try {
+        const accessToken = req.session.spotify.access_token;
+        await startPlayback(accessToken, uris);
+        res.json({ success: true });
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            error: "failed_to_start_playback",
+        });
+    }
+});
 
 app.get('/health', (_req, res) => {
     res.json({

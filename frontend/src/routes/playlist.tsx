@@ -30,6 +30,9 @@ export async function loader({params}: { params: { playlistId?: string }; }) {
         }
     );
 
+    // Redirect to main page if playlist does not exist
+    if (!resPlaylist.ok) return redirect('/');
+
     return {
         profile: await resProfile.json(),
         playlist: await resPlaylist.json(),
@@ -67,6 +70,23 @@ export function Component() {
 
     function revertShuffle() {
         setTracks(initialTracks);
+    }
+
+    async function playShuffledNow() {
+        const uris: string[] = tracks.map(track => track.item.uri);
+
+        const response = await fetch(
+            `${import.meta.env.VITE_BACKEND_URI}/api/me/player/play`, {
+                method: "PUT",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({uris}),
+            }
+        );
+
+        if (!response.ok) throw new Error("Failed to play shuffled playlist");
     }
 
     return (
@@ -118,7 +138,19 @@ export function Component() {
                         className="playlist-button__icon"
                     />
                 </button>
-
+                <button
+                    className="playlist-button playlist-button--play"
+                    aria-label="Play shuffled playlist"
+                    onClick={playShuffledNow}
+                >
+                    <svg
+                        viewBox="0 0 24 24"
+                        className="playlist-button__play-icon"
+                        aria-hidden="true"
+                    >
+                        <path d="M8 5v14l11-7z" />
+                    </svg>
+                </button>
                 <button
                     className="playlist-button playlist-button--secondary"
                     onClick={revertShuffle}

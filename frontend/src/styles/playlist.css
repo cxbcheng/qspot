@@ -131,3 +131,57 @@
 .playlist-button--primary:hover {
     background: #684647;
 }
+
+.playlist-button--play {
+    width: 64px;
+    height: 64px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #1db954;
+    color: white;
+
+    cursor: pointer;
+
+    box-shadow:
+            0 8px 18px rgba(29, 185, 84, 0.35);
+
+    transition:
+            transform 0.15s ease,
+            background 0.15s ease,
+            box-shadow 0.15s ease;
+}
+
+.playlist-button--play:hover {
+    background: #1ed760;
+
+    transform: scale(1.05);
+
+    box-shadow:
+            0 12px 24px rgba(29, 185, 84, 0.45);
+}
+
+.playlist-button--play:active {
+    transform: scale(1);
+}
+
+.playlist-button--play:focus-visible {
+    outline: 3px solid rgba(255,255,255,0.9);
+    outline-offset: 3px;
+}
+
+.playlist-button__play-icon {
+    width: 40px;
+    height: 40px;
+
+    fill: currentColor;
+
+    margin-right: 1px;
+}
