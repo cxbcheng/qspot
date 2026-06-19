@@ -6,6 +6,7 @@ import "../styles/playlist.css";
 import {TrackList} from "../components/TrackList.tsx";
 import {classicalShuffle} from "../../../shared/utils/shuffle.ts";
 import {useState} from "react";
+import {PlayButton} from "../components/PlayButton.tsx";
 
 interface ResponseObject {
     profile: UserProfile;
@@ -72,8 +73,8 @@ export function Component() {
         setTracks(initialTracks);
     }
 
-    async function playShuffledNow() {
-        const uris: string[] = tracks.map(track => track.item.uri);
+    async function playShuffled(fromIndex: number = 0) {
+        const uris: string[] = tracks.map(track => track.item.uri).splice(fromIndex);
 
         const response = await fetch(
             `${import.meta.env.VITE_BACKEND_URI}/api/me/player/play`, {
@@ -87,6 +88,14 @@ export function Component() {
         );
 
         if (!response.ok) throw new Error("Failed to play shuffled playlist");
+    }
+
+    async function handlePlayShuffled() {
+        await playShuffled();
+    }
+
+    async function handlePlayShuffledFrom(index: number) {
+        await playShuffled(index);
     }
 
     return (
@@ -138,19 +147,7 @@ export function Component() {
                         className="playlist-button__icon"
                     />
                 </button>
-                <button
-                    className="playlist-button playlist-button--play"
-                    aria-label="Play shuffled playlist"
-                    onClick={playShuffledNow}
-                >
-                    <svg
-                        viewBox="0 0 24 24"
-                        className="playlist-button__play-icon"
-                        aria-hidden="true"
-                    >
-                        <path d="M8 5v14l11-7z" />
-                    </svg>
-                </button>
+                <PlayButton isPlaying={false} onClick={handlePlayShuffled} />
                 <button
                     className="playlist-button playlist-button--secondary"
                     onClick={revertShuffle}
@@ -166,7 +163,7 @@ export function Component() {
                 </button>
             </section>
 
-            <TrackList tracks={tracks} />
+            <TrackList tracks={tracks} handlePlayFromPosition={handlePlayShuffledFrom} />
         </main>
     );
 }

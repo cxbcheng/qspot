@@ -1,12 +1,14 @@
 import {PlaylistItem} from "../../../shared/types/Playlist.ts";
 import "../styles/track-list.css";
 import {JSX} from "react";
+import {TrackPlayButton} from "./TrackPlayButton.tsx";
 
 interface TrackListProps {
     tracks: PlaylistItem[];
+    handlePlayFromPosition: (index: number) => void;
 }
 
-export function TrackList({ tracks }: TrackListProps): JSX.Element {
+export function TrackList({ tracks, handlePlayFromPosition }: TrackListProps): JSX.Element {
     return (
         <section className="track-list">
             <div className="track-list__header">
@@ -24,8 +26,12 @@ export function TrackList({ tracks }: TrackListProps): JSX.Element {
                             key={track.id}
                             className="track-row"
                         >
-                                <span>
-                                    {index + 1}
+                                <span className="track-number-cell">
+                                    <span className="track-index">{index + 1}</span>
+                                    <TrackPlayButton
+                                        isPlaying={false}
+                                        onClick={() => handlePlayFromPosition(index)}
+                                    />
                                 </span>
 
                             <div className="track-title">

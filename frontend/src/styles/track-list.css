@@ -31,8 +31,20 @@
     border-radius: 4px;
 }
 
+.track-row .playlist-button--track-play {
+    display: none;
+}
+
 .track-row:hover {
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(0, 0, 0, 0.10);
+}
+
+.track-row:hover .track-index {
+    display: none;
+}
+
+.track-row:hover .playlist-button--track-play {
+    display: inline-block;
 }
 
 .track-title {
