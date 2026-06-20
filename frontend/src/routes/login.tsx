@@ -28,8 +28,15 @@ export function Component() {
     const [searchParams, setSearchParams] = useSearchParams();
     const errorCode = searchParams.get("error");
     const errorMessage = getErrorMessage(errorCode);
+    const callback = searchParams.get("callback");
+    const safeCallback =
+        callback &&
+        callback.startsWith("/") &&
+        !callback.startsWith("//")
+            ? callback
+            : "/";
 
-    const spotifyLoginUrl = `${import.meta.env.VITE_BACKEND_URI}/login`;
+    const spotifyLoginUrl = `${import.meta.env.VITE_BACKEND_URI}/login?callback=${safeCallback}`;
 
     // Dismissing the alert removes `error` from the URL — the alert's
     // visibility is fully derived from search params, so there's no separate

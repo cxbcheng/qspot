@@ -13,7 +13,7 @@ interface ResponseObject {
     playlist: Playlist;
 }
 
-export async function loader({params}: { params: { playlistId?: string }; }) {
+export async function loader({params, request}: { params: { playlistId?: string }; request: Request; }) {
     const playlistId = params.playlistId;
     if (!playlistId) throw new Error('Missing playlist ID');
 
@@ -23,7 +23,17 @@ export async function loader({params}: { params: { playlistId?: string }; }) {
         }
     );
 
-    if (resProfile.status === 401) return redirect('/login');
+    if (resProfile.status === 401) {
+        const url = new URL(request.url);
+        const callback = url.pathname + url.search + url.hash;
+        const safeCallback =
+            callback &&
+            callback.startsWith("/") &&
+            !callback.startsWith("//")
+                ? callback
+                : "/";
+        throw redirect(`/login?callback=${encodeURIComponent(safeCallback)}`);
+    }
 
     const resPlaylist: Response = await fetch(
         `${import.meta.env.VITE_BACKEND_URI}/api/playlists/${playlistId}`, {

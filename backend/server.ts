@@ -4,11 +4,13 @@ import crypto from 'crypto';
 import session from 'express-session';
 import 'dotenv/config';
 import {
-    addTracksToPlaylist, copyPlaylistImage,
+    addTracksToPlaylist,
+    copyPlaylistImage,
     createPlaylist,
     getPlaylist,
     getProfile,
-    getUserPlaylists, startPlayback
+    getUserPlaylists,
+    startPlayback
 } from "./services/spotify";
 import {UserProfile} from "../shared/types/UserProfile";
 
@@ -19,6 +21,7 @@ declare module 'express-session' {
             access_token: string;
             refresh_token: string;
         };
+        callback?: string;
     }
 }
 
@@ -86,6 +89,10 @@ function generateRandomString(length: number): string {
 app.get('/login', (req, res) => {
     const state = generateRandomString(16);
     req.session.state = state;
+
+    req.session.callback = typeof req.query.callback === 'string'
+        ? req.query.callback
+        : '/';
 
     const scope = [
         'user-read-private',
@@ -189,9 +196,9 @@ app.get('/callback', async (req, res) => {
             refresh_token: body.refresh_token,
         };
 
-        return res.redirect(
-            `${FRONTEND_URI}/`
-        );
+        const callback = req.session.callback ?? '/';
+        delete req.session.callback;
+        return res.redirect(`${FRONTEND_URI}${callback}`);
     } catch (error) {
         console.error('Callback error:', error);
 
