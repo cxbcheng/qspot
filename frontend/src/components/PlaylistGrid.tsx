@@ -8,9 +8,12 @@ interface PlaylistGridProps {
 }
 
 export function PlaylistGrid({playlists}: PlaylistGridProps): JSX.Element {
+    // Filter out empty playlists
+    const filteredPlaylists = playlists.filter((playlist: Playlist) => !!playlist.items?.total);
+
     return (
         <div className="playlist-grid">
-            {playlists.map((playlist) => (
+            {filteredPlaylists.map((playlist) => (
                 <Link
                     key={playlist.id}
                     to={`/playlists/${playlist.id}`}
@@ -23,18 +26,8 @@ export function PlaylistGrid({playlists}: PlaylistGridProps): JSX.Element {
                         alt={playlist.name}
                         className="playlist-card__image"
                     />
-
-                    <h3>{playlist.name}</h3>
-
-                    <p>
-                        {playlist.owner.display_name}
-                    </p>
-
-                    {playlist.items?.total !== undefined && (
-                        <p>
-                            {playlist.items.total} tracks
-                        </p>
-                    )}
+                    <p>{playlist.name}</p>
+                    <p className="playlist-card__owner">{playlist.owner.display_name}</p>
                 </Link>
             ))}
         </div>
