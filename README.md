@@ -44,14 +44,14 @@ Before installing QSpot, ensure you have:
 Clone the repository:
 
 ```bash
-  git clone https://github.com/cxbcheng/qspot.git
+git clone https://github.com/cxbcheng/qspot.git
 ```
 
 Install project dependencies:
 
 ```bash
-  cd qspot
-  npm install
+cd qspot
+npm install
 ```
 
 ## Environment Variables
@@ -97,7 +97,7 @@ Then copy the Client ID and Client Secret into the `.env` file.
 After installation, run the server:
 
 ```bash
-  npm run dev
+npm run dev
 ```
 
 The application will be available at:
