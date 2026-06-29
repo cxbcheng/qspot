@@ -1,11 +1,13 @@
 {
+  "engines": {
+    "node": ">=24",
+    "npm": ">=11"
+  },
   "dependencies": {
-    "axios": "^1.17.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
-    "npm": "^11.17.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.17.0",
@@ -13,7 +15,7 @@
   },
   "name": "qspot",
   "version": "1.0.0",
-  "description": "A Spotify companion app that enhances playlists with smart classical-music shuffling, composition-aware queueing, and integrated scores, tabs, and sheet music for supported tracks.",
+  "description": "A Spotify companion app that provides classical-music helper tools for playlists with smart classical-music shuffling, queueing, and playlist cloning.",
   "main": "index.js",
   "scripts": {
     "client": "vite --host 127.0.0.1",
