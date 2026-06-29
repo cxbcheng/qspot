@@ -27,7 +27,7 @@ The broader impact of these policy changes on independent developers can be read
 ## Screenshots
 
 <img width="1920" height="1200" alt="App Login Page" src="https://github.com/user-attachments/assets/d7e0a2a2-df71-49f6-9acc-c52f83be1522" />
-<img width="1896" height="1198" alt="image" src="https://github.com/user-attachments/assets/29e1629d-7b9a-4ffb-9c3e-d015f40c8b4c" />
+<img width="1896" height="1198" alt="App Playlist View" src="https://github.com/user-attachments/assets/29e1629d-7b9a-4ffb-9c3e-d015f40c8b4c" />
 <img width="1920" height="1200" alt="Classical Shuffle Playlist Demo" src="https://i.imgur.com/f5mCUb6.gif" />
 
 ## Installation
