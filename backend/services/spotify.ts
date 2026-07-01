@@ -1,66 +1,54 @@
 import {UserProfile} from "../../shared/types/UserProfile";
-import {Playlists} from "../../shared/types/Playlist";
+import {Playlist, Playlists} from "../../shared/types/Playlist";
 
-export async function getProfile(accessToken: string): Promise<UserProfile> {
-    if (!accessToken) throw new Error("No access token");
+const SPOTIFY_API = "https://api.spotify.com/v1";
 
-    const response: Response = await fetch('https://api.spotify.com/v1/me', {
+async function _spotifyFetch(accessToken: string, path: string, init?: RequestInit): Promise<Response> {
+    if (!accessToken) {
+        throw new Error("No access token");
+    }
+
+    const response = await fetch(`${SPOTIFY_API}${path}`, {
+        ...init,
         headers: {
             Authorization: `Bearer ${accessToken}`,
+            ...(init?.headers ?? {}),
         },
     });
 
     if (!response.ok) {
-        const error: string = await response.text();
-        throw new Error(`Spotify returned ${response.status}: ${error}`);
-    }
-    return response.json();
-}
-
-export async function getUserPlaylists(accessToken: string): Promise<Playlists> {
-    if (!accessToken) throw new Error("No access token");
-
-    const response: Response = await fetch(`https://api.spotify.com/v1/me/playlists`, {
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-        },
-    });
-
-    if (!response.ok) {
-        const error: string = await response.text();
+        const error = await response.text();
         throw new Error(`Spotify returned ${response.status}: ${error}`);
     }
 
-    return response.json();
+    return response;
 }
 
-export async function getPlaylist(accessToken: string, playlistId: string): Promise<any> {
-    if (!accessToken) throw new Error("No access token");
-
-    const response: Response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}`, {
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-        }
-    });
-
-    if (!response.ok) {
-        const error: string = await response.text();
-        throw new Error(`Spotify returned ${response.status}: ${error}`);
-    }
-
-    return response.json();
+async function _spotifyFetchJson<T>(accessToken: string, path: string, init?: RequestInit): Promise<T> {
+    const response = await _spotifyFetch(accessToken, path, init);
+    return await response.json() as Promise<T>;
 }
 
-export async function createPlaylist(
+export function getProfile(accessToken: string): Promise<UserProfile> {
+    return _spotifyFetchJson<UserProfile>(accessToken, "/me");
+}
+
+export function getUserPlaylists(accessToken: string): Promise<Playlists> {
+    return _spotifyFetchJson<Playlists>(accessToken, "/me/playlists");
+}
+
+export function getPlaylist(accessToken: string, playlistId: string): Promise<Playlist> {
+    return _spotifyFetchJson(accessToken, `/playlists/${playlistId}`);
+}
+
+export function createPlaylist(
     accessToken: string,
     name: string,
     description: string,
-    isPublic: boolean
-) {
-    const response = await fetch(`https://api.spotify.com/v1/me/playlists`, {
+    isPublic: boolean): Promise<any> {
+    return _spotifyFetchJson(accessToken, "/me/playlists", {
         method: "POST",
         headers: {
-            Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -69,13 +57,6 @@ export async function createPlaylist(
             public: isPublic,
         }),
     });
-
-    if (!response.ok) {
-        const error: string = await response.text();
-        throw new Error(`Spotify returned ${response.status}: ${error}`);
-    }
-
-    return response.json();
 }
 
 /**
@@ -85,24 +66,12 @@ async function _addTracksToPlaylist100(
     accessToken: string,
     playlistId: string,
     uris: string[]
-) {
-    const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/items`, {
+): Promise<any> {
+    return _spotifyFetchJson(accessToken, `/playlists/${playlistId}/items`, {
         method: "POST",
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            uris,
-        }),
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ uris }),
     });
-
-    if (!response.ok) {
-        const error: string = await response.text();
-        throw new Error(`Spotify returned ${response.status}: ${error}`);
-    }
-
-    return response.json();
 }
 
 /**
@@ -113,49 +82,30 @@ export async function addTracksToPlaylist(
     accessToken: string,
     playlistId: string,
     uris: string[]
-) {
+): Promise<void> {
     for (let i = 0; i < uris.length; i += 100) {
         const chunk: string[] = uris.slice(i, i + 100);
         await _addTracksToPlaylist100(accessToken, playlistId, chunk);
     }
 }
 
-export async function getPlaylistImages(
+export function getPlaylistImages(
     accessToken: string,
     playlistId: string
-) {
-    const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/images`, {
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-        },
-    });
-
-    if (!response.ok) {
-        const error: string = await response.text();
-        throw new Error(`Spotify returned ${response.status}: ${error}`);
-    }
-
-    return response.json();
+): Promise<any> {
+    return _spotifyFetchJson(accessToken, `/playlists/${playlistId}/images`);
 }
 
 export async function setPlaylistImage(
     accessToken: string,
     playlistId: string,
-    base64Jpeg: string
-) {
-    const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/images`, {
+    base64Jpeg: string,
+): Promise<void> {
+    await _spotifyFetch(accessToken, `/playlists/${playlistId}/images`, {
         method: "PUT",
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "image/jpeg",
-        },
+        headers: {"Content-Type": "image/jpeg"},
         body: base64Jpeg,
     });
-
-    if (!response.ok) {
-        const error: string = await response.text();
-        throw new Error(`Spotify returned ${response.status}: ${error}`);
-    }
 }
 
 /**
@@ -179,20 +129,17 @@ export async function copyPlaylistImage(
     await setPlaylistImage(accessToken, destinationPlaylistId, base64Image);
 }
 
-export async function addToQueue(accessToken: string, uri: string): Promise<void> {
-    const response = await fetch(
-        `https://api.spotify.com/v1/me/player/queue?uri=${encodeURIComponent(uri)}`, {
+export async function addToQueue(
+    accessToken: string,
+    uri: string,
+): Promise<void> {
+    await _spotifyFetch(
+        accessToken,
+        `/me/player/queue?uri=${encodeURIComponent(uri)}`,
+        {
             method: "POST",
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        }
+        },
     );
-
-    if (!response.ok) {
-        const error: string = await response.text();
-        throw new Error(`Spotify returned ${response.status}: ${error}`);
-    }
 }
 
 export async function addTracksToQueue(accessToken: string, uris: string[]): Promise<void> {
@@ -201,20 +148,13 @@ export async function addTracksToQueue(accessToken: string, uris: string[]): Pro
     }
 }
 
-export async function startPlayback(accessToken: string, uris: string[]) {
-    if (!accessToken) throw new Error("No access token");
-
-    const response: Response = await fetch(`https://api.spotify.com/v1/me/player/play`, {
+export async function startPlayback(
+    accessToken: string,
+    uris: string[],
+): Promise<void> {
+    await _spotifyFetch(accessToken, "/me/player/play", {
         method: "PUT",
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({uris}),
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ uris }),
     });
-
-    if (!response.ok) {
-        const error: string = await response.text();
-        throw new Error(`Spotify returned ${response.status}: ${error}`);
-    }
 }
