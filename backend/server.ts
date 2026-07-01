@@ -6,10 +6,10 @@ import 'dotenv/config';
 import {
     addTracksToPlaylist,
     copyPlaylistImage,
-    createPlaylist,
+    createPlaylist, exchangeAuthCodeForToken,
     getPlaylist,
     getProfile,
-    getUserPlaylists,
+    getUserPlaylists, refreshAccessToken, SpotifyApiError,
     startPlayback
 } from "./services/spotify";
 import {UserProfile} from "../shared/types/UserProfile";
@@ -47,6 +47,11 @@ if (!REDIRECT_URI) {
 
 if (!FRONTEND_URI) {
     throw new Error('FRONTEND_URI is missing');
+}
+
+const SPOTIFY_CREDENTIALS = {
+    clientId: CLIENT_ID,
+    clientSecret: CLIENT_SECRET,
 }
 
 const app = express();
@@ -155,34 +160,10 @@ app.get('/callback', async (req, res) => {
     delete req.session.state;
 
     try {
-        const tokenResponse: Response = await fetch(
-            'https://accounts.spotify.com/api/token',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type':
-                        'application/x-www-form-urlencoded',
-                    Authorization:
-                        'Basic ' +
-                        Buffer.from(
-                            `${CLIENT_ID}:${CLIENT_SECRET}`
-                        ).toString('base64')
-                },
-                body: new URLSearchParams({
-                    code,
-                    redirect_uri: REDIRECT_URI,
-                    grant_type: 'authorization_code'
-                })
-            }
-        );
-
-        const body = await tokenResponse.json();
+        const {tokenResponse, body} = await exchangeAuthCodeForToken(code, REDIRECT_URI, SPOTIFY_CREDENTIALS);
 
         if (!tokenResponse.ok) {
-            console.error(
-                'Spotify token exchange failed:',
-                body
-            );
+            console.error('Spotify token exchange failed:', body);
 
             return res.redirect(
                 `${FRONTEND_URI}/login?${new URLSearchParams({
@@ -199,8 +180,8 @@ app.get('/callback', async (req, res) => {
         const callback = req.session.callback ?? '/';
         delete req.session.callback;
         return res.redirect(`${FRONTEND_URI}${callback}`);
-    } catch (error) {
-        console.error('Callback error:', error);
+    } catch (e) {
+        console.error('Callback error:', e);
 
         return res.redirect(
             `${FRONTEND_URI}/login?${new URLSearchParams({
@@ -219,56 +200,31 @@ app.get('/callback', async (req, res) => {
  * }
  */
 app.post('/refresh_token', async (req, res) => {
-    const refresh_token =
+    const refreshToken =
         typeof req.body?.refresh_token === 'string'
             ? req.body.refresh_token
             : null;
 
-    if (!refresh_token) {
+    if (!refreshToken) {
         return res.status(400).json({
             error: 'missing_refresh_token'
         });
     }
 
     try {
-        const tokenResponse = await fetch(
-            'https://accounts.spotify.com/api/token',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type':
-                        'application/x-www-form-urlencoded',
-                    Authorization:
-                        'Basic ' +
-                        Buffer.from(
-                            `${CLIENT_ID}:${CLIENT_SECRET}`
-                        ).toString('base64')
-                },
-                body: new URLSearchParams({
-                    grant_type: 'refresh_token',
-                    refresh_token
-                })
-            }
-        );
-
-        const body = await tokenResponse.json();
+        const {tokenResponse, body} = await refreshAccessToken(refreshToken, SPOTIFY_CREDENTIALS);
 
         if (!tokenResponse.ok) {
-            console.error(
-                'Spotify refresh failed:',
-                body
-            );
-
+            console.error('Spotify refresh failed:', body);
             return res.status(400).json(body);
         }
 
         return res.json({
             access_token: body.access_token,
-            refresh_token:
-                body.refresh_token ?? refresh_token
+            refresh_token: body.refresh_token ?? refreshToken
         });
-    } catch (error) {
-        console.error('Refresh token error:', error);
+    } catch (e) {
+        console.error('Refresh token error:', e);
 
         return res.status(500).json({
             error: 'failed_to_refresh_token'
@@ -325,7 +281,11 @@ app.get("/api/playlists/:playlistId", async (req, res) => {
     try {
         const playlist = await getPlaylist(accessToken, playlistId);
         return res.json(playlist);
-    } catch (error) {
+    } catch (e) {
+        if (e instanceof SpotifyApiError) {
+            return res.status(e.status).send(e.message);
+        }
+
         return res.status(500).json({
             error: 'failed_to_fetch_playlist'
         });
@@ -370,8 +330,12 @@ app.post("/api/playlists/:playlistId/create-shuffle", async (req, res) => {
             playlistId: newPlaylist.id,
             playlistUrl: newPlaylist.external_urls.spotify,
         });
-    } catch (error) {
-        console.error(error);
+    } catch (e) {
+        if (e instanceof SpotifyApiError) {
+            return res.status(e.status).send(e.message);
+        }
+
+        console.error(e);
 
         return res.status(500).json({
             error:
@@ -392,8 +356,12 @@ app.put("/api/me/player/play", async (req, res) => {
         const accessToken = req.session.spotify.access_token;
         await startPlayback(accessToken, uris);
         res.json({ success: true });
-    } catch (error) {
-        console.error(error);
+    } catch (e) {
+        if (e instanceof SpotifyApiError) {
+            return res.status(e.status).send(e.message);
+        }
+
+        console.error(e);
 
         res.status(500).json({
             error: "failed_to_start_playback",
