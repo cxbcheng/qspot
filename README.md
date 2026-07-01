@@ -1,7 +1,7 @@
 
 # QSpot
 
-A Spotify companion app that provides classical-music helper tools for playlists with smart classical-music shuffling, queueing, and playlist cloning.
+A Spotify companion app that provides playlist tools with smart classical-music shuffling, queueing, and playlist cloning.
 ## Built With
 
 [![React](https://img.shields.io/badge/React-%2320232a.svg?logo=react&logoColor=%2361DAFB)](https://react.dev)
@@ -17,6 +17,13 @@ A Spotify companion app that provides classical-music helper tools for playlists
 - **Shuffle Preview**: Preview a shuffle ordering before playing the desired order or making a new playlist.
 - **Playlist Creation**: Generate a new Spotify playlist containing the shuffled order. The original playlist remains unchanged.
 - **Secure Authentication**: Use Spotify OAuth 2.0 along with server-side sessions so access tokens remain on the backend.
+
+## Screenshots
+
+<img width="1920" height="1200" alt="App Login Page" src="https://github.com/user-attachments/assets/d7e0a2a2-df71-49f6-9acc-c52f83be1522" />
+<img width="1896" height="1198" alt="App Playlist View" src="https://github.com/user-attachments/assets/29e1629d-7b9a-4ffb-9c3e-d015f40c8b4c" />
+<img width="1920" height="1200" alt="Classical Shuffle Playlist Demo" src="https://i.imgur.com/f5mCUb6.gif" />
+
 ## Spotify API Restrictions
 
 Due to Spotify's [Web API quota and development policies](https://developer.spotify.com/documentation/web-api/concepts/quota-modes), QSpot currently operates in **Development Mode**. As a result, only Spotify accounts explicitly added to the application's allowlist can access Spotify Web API data.
@@ -24,24 +31,26 @@ Due to Spotify's [Web API quota and development policies](https://developer.spot
 These restrictions make it impractical to provide as a publicly accessible service. For this reason, QSpot is distributed primarily as a GitHub project intended to be run locally with a personal Spotify Developer application.
 
 The broader impact of these policy changes on independent developers can be read [here](https://spotify.leemartin.com/).
-## Screenshots
 
-<img width="1920" height="1200" alt="App Login Page" src="https://github.com/user-attachments/assets/d7e0a2a2-df71-49f6-9acc-c52f83be1522" />
-<img width="1896" height="1198" alt="App Playlist View" src="https://github.com/user-attachments/assets/29e1629d-7b9a-4ffb-9c3e-d015f40c8b4c" />
-<img width="1920" height="1200" alt="Classical Shuffle Playlist Demo" src="https://i.imgur.com/f5mCUb6.gif" />
+## Quick Start
 
-## Installation
+**Before you begin, you'll need:**
 
-Before installing QSpot, ensure you have:
-
-- Node.js 24+
-- npm 11+
+- Node.js 24+ and npm 11+
 - A Spotify Premium account
-- A Spotify Developer application
+- A [Spotify Developer app](https://developer.spotify.com/dashboard)
 
-> **Note:** QSpot currently relies on Spotify Web API playback endpoints, which require a Spotify Premium account.
+**1. Create your Spotify Developer app**
+ 
+In the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard), create a new app. Under Redirect URIs, add:
+ 
+```
+http://127.0.0.1:8080/callback
+```
 
-Clone the repository and install project dependencies:
+Copy the **Client ID** and **Client Secret**.
+
+**2. Clone and install:**
 
 ```bash
 git clone https://github.com/cxbcheng/qspot.git
@@ -49,14 +58,14 @@ cd qspot
 npm install
 ```
 
-## Environment Variables
+**3. Configure your environment:**
 
 Create a `.env` file in the root directory:
 
 ```env
-SPOTIFY_CLIENT_ID=...
-SPOTIFY_CLIENT_SECRET=...
-SESSION_SECRET=replace-with-a-random-secret
+SPOTIFY_CLIENT_ID=
+SPOTIFY_CLIENT_SECRET=
+SESSION_SECRET=
 
 VITE_BACKEND_URI=http://127.0.0.1:8080
 REDIRECT_URI=http://127.0.0.1:8080/callback
@@ -65,6 +74,8 @@ FRONTEND_URI=http://127.0.0.1:5173
 PORT=8080
 NODE_ENV=development
 ```
+
+Paste in the **Client ID** and **Client Secret** from step 1, and set `SESSION_SECRET` to any random string.
 
 | Variable | Purpose |
 | - | - |
@@ -77,28 +88,16 @@ NODE_ENV=development
 | `PORT` | Backend server port |
 | `NODE_ENV` | Runtime environment |
 
-
-Create a Spotify application in the Spotify Developer Dashboard and configure the Redirect URI:
-
-`http://127.0.0.1:8080/callback`
-
-Then copy the Client ID and Client Secret into the `.env` file.
-
-> **Development Mode**
->
-> Spotify applications begin in Development Mode. Only Spotify users added to the application's allowlist can access API data. Other users may authenticate successfully, but Spotify API requests will return `HTTP 403` responses.
-## Run Locally
-
-After installation, run the server:
+**4. Run it:**
 
 ```bash
 npm run dev
 ```
 
-The application will be available at:
-
+The app will be available at:
 - Frontend: http://127.0.0.1:5173
 - Backend: http://127.0.0.1:8080
+
 ## License
 
 Distributed under MIT License. See `LICENSE.txt` for more information.
