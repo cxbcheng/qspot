@@ -9,7 +9,7 @@ import {
     createPlaylist, exchangeAuthCodeForToken,
     getPlaylist,
     getProfile,
-    getUserPlaylists, refreshAccessToken, SpotifyApiError,
+    getUserPlaylists, refreshAccessToken, SpotifyApiError, SpotifyCredentials,
     startPlayback
 } from "./services/spotify";
 import {UserProfile} from "../shared/types/UserProfile";
@@ -49,7 +49,7 @@ if (!FRONTEND_URI) {
     throw new Error('FRONTEND_URI is missing');
 }
 
-const SPOTIFY_CREDENTIALS = {
+const SPOTIFY_CREDENTIALS: SpotifyCredentials = {
     clientId: CLIENT_ID,
     clientSecret: CLIENT_SECRET,
 }

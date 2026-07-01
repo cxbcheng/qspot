@@ -4,9 +4,14 @@ import {Playlist, Playlists} from "../../shared/types/Playlist";
 const SPOTIFY_API = "https://api.spotify.com/v1";
 const SPOTIFY_ACCOUNTS_API = "https://accounts.spotify.com";
 
-interface SpotifyCredentials {
+export interface SpotifyCredentials {
     clientId: string;
     clientSecret: string;
+}
+
+export interface FetchTokenResult {
+    tokenResponse: Response;
+    body: any;
 }
 
 // So that the server knows that the thrown error has taken the Spotify error status
@@ -19,11 +24,10 @@ export class SpotifyApiError extends Error {
 
 /**
  * Base utility for fetching from Spotify's token endpoint
- * @return { tokenResponse, body }
  */
 async function _fetchSpotifyToken(
     bodyParams: Record<string, string>,
-    credentials: SpotifyCredentials) {
+    credentials: SpotifyCredentials): Promise<FetchTokenResult> {
     const tokenResponse = await fetch(
         `${SPOTIFY_ACCOUNTS_API}/api/token`,
         {
@@ -47,12 +51,11 @@ async function _fetchSpotifyToken(
 
 /**
  * Exchanges the initial authorization code for access and refresh tokens
- * @return { tokenResponse, body }
  */
 export async function exchangeAuthCodeForToken(
     code: string,
     redirectUri: string,
-    credentials: SpotifyCredentials) {
+    credentials: SpotifyCredentials): Promise<FetchTokenResult> {
     return _fetchSpotifyToken({
         code,
         redirect_uri: redirectUri,
@@ -64,7 +67,9 @@ export async function exchangeAuthCodeForToken(
  * Uses a refresh token to request a new access token
  * @return { tokenResponse, body }
  */
-export async function refreshAccessToken(refreshToken: string, credentials: SpotifyCredentials) {
+export async function refreshAccessToken(
+    refreshToken: string,
+    credentials: SpotifyCredentials): Promise<FetchTokenResult> {
     return _fetchSpotifyToken({
         grant_type: 'refresh_token',
         refresh_token: refreshToken
