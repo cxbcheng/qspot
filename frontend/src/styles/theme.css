@@ -1,0 +1,66 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Karla:wght@400;500;600;700&display=swap");
+
+:root {
+    --color-background: #fbf1e7;
+    --color-surface: #ffffff;
+    --color-surface-alt: #f3e3d3;
+    --color-border: #e3d0bf;
+
+    --color-primary: #775253;
+    --color-primary-dark: #5c3f40;
+    --color-primary-light: #efdcd6;
+    --color-secondary: #a9704a;
+
+    --color-text: #3a2225;
+    --color-text-muted: #6b4a46;
+    --color-heading: #2a1719;
+
+    --color-success: #1db954;
+    --color-success-hover: #1ed760;
+    --color-success-shadow: rgba(29, 185, 84, 0.35);
+
+    --color-danger-background: #f8e9e4;
+    --color-danger-border: #dda08a;
+    --color-danger-text: #7a3826;
+    --color-danger-icon: #b5462f;
+
+    --spotify-green: #1ed760;
+    --spotify-black: #0a0a0a;
+
+    --font-display: "Fraunces", serif;
+    --font-body: "Karla", system-ui, sans-serif;
+
+    --text-xs: 0.8rem;
+    --text-sm: 0.9rem;
+    --text-md: 1rem;
+    --text-lg: 1.25rem;
+    --text-xl: 2rem;
+    --text-2xl: 3rem;
+
+    --weight-medium: 500;
+    --weight-semibold: 600;
+    --weight-bold: 700;
+
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.5rem;
+    --space-6: 2rem;
+    --space-7: 3rem;
+    --space-8: 4rem;
+
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --radius-full: 9999px;
+
+    --shadow-sm: 0 2px 8px rgba(58, 34, 37, 0.08);
+    --shadow-md: 0 8px 24px rgba(58, 34, 37, 0.12);
+    --shadow-lg: 0 20px 48px rgba(58, 34, 37, 0.18);
+
+    --transition-fast: 150ms ease;
+    --transition-normal: 250ms ease;
+
+    --content-width: 1200px;
+}

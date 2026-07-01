@@ -8,6 +8,7 @@ import {classicalShuffle} from "../../../shared/utils/shuffle.ts";
 import {useState} from "react";
 import {PlayButton} from "../components/PlayButton.tsx";
 import {createShuffledPlaylist, fetchPlaylist, fetchProfile, startPlayback} from "../api/fetch.ts";
+import {Navbar} from "../components/Navbar.tsx";
 
 interface ResponseObject {
     profile: UserProfile;
@@ -80,71 +81,69 @@ export function Component() {
     }
 
     return (
-        <main className="playlist-page">
-            <header className="playlist-header">
-                <img
-                    src={
-                        playlist.images?.[0]?.url || "/img/spotify-playlist-blank-cover.png"
-                    }
-                    alt={playlist.name}
-                    className="playlist-cover"
-                />
-
-                <div className="playlist-meta">
-                    <p className="playlist-type">
-                        Playlist
-                    </p>
-
-                    <h1 className="playlist-name">
-                        {playlist.name}
-                    </h1>
-
-                    {playlist.description && (
-                        <p className="playlist-description">
-                            {playlist.description}
-                        </p>
-                    )}
-
-                    <p className="playlist-owner">
-                        {playlist.owner.display_name}
-                    </p>
-
-                    <p className="playlist-count">
-                        {playlist.items?.total ?? 0}
-                        {" "}tracks
-                    </p>
-                </div>
-            </header>
-
-            <section className="playlist-actions">
-                <button
-                    className="playlist-button playlist-button--shuffle"
-                    aria-label="Shuffle playlist"
-                    onClick={handleShuffle}
-                >
+        <><Navbar profile={res.profile}/>
+            <main className="playlist-page">
+                <header className="playlist-header">
                     <img
-                        src="/img/shuffle.png"
-                        alt="Shuffle playlist"
-                        className="playlist-button__icon"
-                    />
-                </button>
-                <PlayButton isPlaying={false} onClick={handlePlayShuffled} />
-                <button
-                    className="playlist-button playlist-button--secondary"
-                    onClick={revertShuffle}
-                >
-                    Revert
-                </button>
+                        src={playlist.images?.[0]?.url || "/img/spotify-playlist-blank-cover.png"}
+                        alt={playlist.name}
+                        className="playlist-cover"/>
 
-                <button
-                    className="playlist-button playlist-button--primary"
-                    onClick={handleCreateShuffledPlaylist}
-                >
-                    Create Playlist
-                </button>
-            </section>
+                    <div className="playlist-meta">
+                        <p className="playlist-type">
+                            Playlist
+                        </p>
 
-            <TrackList tracks={tracks} handlePlayFromPosition={handlePlayShuffledFrom} />
-        </main>
+                        <h1 className="playlist-name">
+                            {playlist.name}
+                        </h1>
+
+                        {playlist.description && (
+                            <p className="playlist-description">
+                                {playlist.description}
+                            </p>
+                        )}
+
+                        <p className="playlist-owner">
+                            {playlist.owner.display_name}
+                        </p>
+
+                        <p className="playlist-count">
+                            {playlist.items?.total ?? 0}
+                            {" "}tracks
+                        </p>
+                    </div>
+                </header>
+
+                <section className="playlist-actions">
+                    <button
+                        className="playlist-button playlist-button--shuffle"
+                        aria-label="Shuffle playlist"
+                        onClick={handleShuffle}
+                    >
+                        <img
+                            src="/img/shuffle.png"
+                            alt="Shuffle playlist"
+                            className="playlist-button__icon"/>
+                    </button>
+                    <PlayButton isPlaying={false} onClick={handlePlayShuffled}/>
+                    <button
+                        className="playlist-button playlist-button--secondary"
+                        onClick={revertShuffle}
+                    >
+                        Revert
+                    </button>
+
+                    <button
+                        className="playlist-button playlist-button--primary"
+                        onClick={handleCreateShuffledPlaylist}
+                    >
+                        Create Playlist
+                    </button>
+                </section>
+
+                <TrackList tracks={tracks} handlePlayFromPosition={handlePlayShuffledFrom}/>
+            </main>
+        </>
     );
 }

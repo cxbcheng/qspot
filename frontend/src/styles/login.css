@@ -1,213 +1,170 @@
-/* ==========================================================================
-   login.css
-   Styles for the Spotify login route. All custom properties are scoped to
-   `.login-page` so they can't leak into / clash with the rest of the app.
-   ========================================================================== */
-
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap");
+@import "./theme.css";
 
 .login-page {
-    /* -- Color tokens -------------------------------------------------- */
-    --color-bg-base: #0b0b0d;
-    --color-bg-elevated: #161616;
-    --color-border-subtle: rgba(255, 255, 255, 0.08);
-    --color-text-primary: #f5f5f2;
-    --color-text-secondary: rgba(245, 245, 242, 0.66);
-    --color-accent: #1ed760; /* Spotify green — keep in sync with SpotifyButton.tsx */
-    --color-danger-bg: rgba(255, 86, 86, 0.12);
-    --color-danger-border: rgba(255, 99, 99, 0.35);
-    --color-danger-text: #ffc4c4;
-
-    /* -- Spotify's own colors, isolated to the auth button --------------- */
-    --spotify-green: #1ed760;
-    --spotify-ink: #0a0a0a;
-
-    /* -- Type tokens ----------------------------------------------------- */
-    --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
-    --font-body: "Inter", system-ui, sans-serif;
-
     position: relative;
-    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow-x: hidden;
-    padding: 24px;
-    background: var(--color-bg-base);
-    color: var(--color-text-primary);
-    font-family: var(--font-body);
+    min-height: 100vh;
+    padding: var(--space-6);
+    overflow: hidden;
+    background: var(--color-background);
 }
 
-.login-page *,
-.login-page *::before,
-.login-page *::after {
-    box-sizing: border-box;
-}
-
-/* Ambient stage-light glow behind the card. Purely decorative. */
 .login-page__glow {
     position: absolute;
     inset: -20%;
-    z-index: 0;
     pointer-events: none;
-    background: radial-gradient(
-            circle at 20% 20%,
-            rgba(30, 215, 96, 0.22),
-            transparent 55%
-    ),
-    radial-gradient(circle at 80% 75%, rgba(81, 47, 158, 0.28), transparent 55%);
-    filter: blur(10px);
+    background: radial-gradient(circle at 50% 0%, rgba(119, 82, 83, 0.15), transparent 60%);
+    filter: blur(60px);
 }
 
-/* ==========================================================================
-   Card
-   ========================================================================== */
-
-.login-card {
+.login-hero {
     position: relative;
     z-index: 1;
-    width: 100%;
-    max-width: 408px;
-    background: var(--color-bg-elevated);
-    border: 1px solid var(--color-border-subtle);
-    border-radius: 20px;
-    padding: 40px 36px 36px;
-    text-align: center;
-    box-shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-}
-
-/* ==========================================================================
-   Brand mark — animated "equalizer" logo placeholder
-   ========================================================================== */
-
-.login-brand {
     display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    gap: 6px;
-    width: 56px;
-    height: 56px;
-    padding: 12px;
-    margin: 0 auto 28px;
-    background: linear-gradient(160deg, var(--color-accent) 0%, #14a34a 100%);
-    border-radius: 16px;
-    box-shadow: 0 8px 24px -8px rgba(30, 215, 96, 0.55);
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-7);
+    width: 100%;
+    max-width: 640px;
 }
 
-.login-brand__bar {
+.login-hero__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.login-hero__eyebrow {
+    color: var(--color-primary);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.login-hero__title {
+    font-size: clamp(3.5rem, 10vw, 6rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--color-heading);
+}
+
+.login-hero__subtitle {
+    color: var(--color-text-muted);
+    font-size: clamp(1.1rem, 2vw, 1.25rem);
+    line-height: 1.8;
+    max-width: 480px;
+}
+
+.login-hero__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+    width: 100%;
+    max-width: 320px;
+}
+
+.login-hero__footnote {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    line-height: 1.6;
+    opacity: 0.8;
+}
+
+.alert {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    width: 100%;
+    padding: 14px;
+    border: 1px solid var(--color-danger-border);
+    border-radius: var(--radius-md);
+    background: var(--color-danger-background);
+    color: var(--color-danger-text);
+    font-size: var(--text-sm);
+    text-align: left;
+}
+
+.alert__icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: var(--color-danger-icon);
+}
+
+.alert__message {
     flex: 1;
-    height: 25%;
-    background: #06140c;
-    border-radius: 2px;
-    animation: equalize 1.4s ease-in-out infinite;
 }
 
-.login-brand__bar:nth-child(1) {
-    animation-delay: -1.2s;
-}
-.login-brand__bar:nth-child(2) {
-    animation-delay: -0.6s;
-}
-.login-brand__bar:nth-child(3) {
-    animation-delay: -0.9s;
-}
-.login-brand__bar:nth-child(4) {
-    animation-delay: -0.3s;
-}
-
-@keyframes equalize {
-    0%,
-    100% {
-        height: 25%;
-    }
-    50% {
-        height: 85%;
-    }
+.alert__dismiss {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: inherit;
+    transition: background var(--transition-fast), color var(--transition-fast);
 }
 
-/* ==========================================================================
-   Title / copy
-   ========================================================================== */
-
-.login-card__title {
-    font-family: var(--font-display);
-    font-size: clamp(1.65rem, 1.4rem + 1vw, 2.25rem);
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    margin: 0 0 12px;
+.alert__dismiss:hover {
+    background: rgba(119, 82, 83, 0.08);
 }
 
-.login-card__subtitle {
-    font-size: 0.975rem;
-    line-height: 1.55;
-    color: var(--color-text-secondary);
-    margin: 0 0 28px;
+.alert__dismiss:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
 }
 
-.login-card__footnote {
-    margin: 20px 0 0;
-    font-size: 0.8rem;
-    line-height: 1.5;
-    color: var(--color-text-secondary);
+.alert__dismiss svg {
+    width: 14px;
+    height: 14px;
 }
-
-/* ==========================================================================
-   Footer attribution
-   ========================================================================== */
-
-.login-card__footer {
-    margin: 22px 0 0;
-    padding-top: 16px;
-    border-top: 1px solid var(--color-border-subtle);
-    font-size: 0.75rem;
-    color: var(--color-text-secondary);
-}
-
-/* ==========================================================================
-   Spotify CTA — intentionally Spotify's own colors, not QSpot's brand
-   ========================================================================== */
 
 .spotify-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: var(--space-3);
     width: 100%;
     min-height: 52px;
-    padding: 14px 20px;
+    padding: 0 var(--space-5);
     border: none;
-    border-radius: 999px;
+    border-radius: var(--radius-full);
     background: var(--spotify-green);
-    color: var(--spotify-ink);
-    font-family: var(--font-body);
-    font-weight: 700;
-    font-size: 0.95rem;
+    color: var(--spotify-black);
+    font-size: var(--text-md);
+    font-weight: var(--weight-bold);
     text-decoration: none;
-    cursor: pointer;
-    box-shadow: 0 14px 26px -14px rgba(30, 215, 96, 0.55);
-    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+    transition: transform var(--transition-fast), filter var(--transition-fast), box-shadow var(--transition-fast);
+    box-shadow: 0 4px 12px rgba(30, 215, 96, 0.25);
 }
 
 .spotify-button:hover {
+    transform: translateY(-2px);
     filter: brightness(1.05);
-    transform: translateY(-1px);
-    box-shadow: 0 18px 32px -14px rgba(30, 215, 96, 0.65);
+    box-shadow: 0 8px 16px rgba(30, 215, 96, 0.35);
 }
 
 .spotify-button:active {
     transform: translateY(0);
-    filter: brightness(0.97);
 }
 
 .spotify-button:focus-visible {
-    outline: 3px solid var(--color-border-subtle);
+    outline: 2px solid var(--color-primary);
     outline-offset: 3px;
 }
 
 .spotify-button--connecting {
-    cursor: default;
     pointer-events: none;
+    cursor: default;
     filter: brightness(0.98);
 }
 
@@ -228,104 +185,20 @@
     }
 }
 
-/* ==========================================================================
-   Error alert
-   ========================================================================== */
-
-.alert {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    text-align: left;
-    background: var(--color-danger-bg);
-    border: 1px solid var(--color-danger-border);
-    color: var(--color-danger-text);
-    border-radius: 12px;
-    padding: 12px 14px;
-    margin-bottom: 24px;
-    font-size: 0.85rem;
-    line-height: 1.45;
-}
-
-.alert__icon {
-    width: 20px;
-    height: 20px;
-    flex-shrink: 0;
-    margin-top: 1px;
-    color: var(--color-danger-icon);
-}
-
-.alert__message {
-    flex: 1;
-    margin: 0;
-}
-
-.alert__dismiss {
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    padding: 0;
-    border: none;
-    border-radius: 6px;
-    background: transparent;
-    color: inherit;
-    cursor: pointer;
-    transition: background 0.15s ease, color 0.15s ease;
-}
-
-.alert__dismiss svg {
-    width: 14px;
-    height: 14px;
-}
-
-.alert__dismiss:hover {
-    background: rgba(30, 26, 23, 0.08);
-    color: var(--color-ink);
-}
-
-.alert__dismiss:focus-visible {
-    outline: 2px solid var(--color-ink);
-    outline-offset: 2px;
-}
-
-/* ==========================================================================
-   Responsive tweaks
-   ========================================================================== */
-
-@media (max-width: 400px) {
-    .login-card {
-        padding: 32px 24px 28px;
-        border-radius: 18px;
+@media (max-width: 700px) {
+    .login-page {
+        padding: var(--space-5);
     }
-
-    .login-mark {
-        width: 52px;
-        height: 52px;
-    }
-
-    .login-card__title {
-        font-size: 1.7rem;
+    .login-hero__title {
+        font-size: clamp(3rem, 12vw, 4rem);
     }
 }
-
-/* ==========================================================================
-   Reduced motion
-   ========================================================================== */
 
 @media (prefers-reduced-motion: reduce) {
-    .login-card {
-        animation: none;
-    }
-
-    .spotify-button__spinner {
-        animation: none;
-    }
-
     .spotify-button,
-    .alert__dismiss {
+    .alert__dismiss,
+    .spotify-button__spinner {
         transition: none;
+        animation: none;
     }
 }

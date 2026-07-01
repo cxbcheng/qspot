@@ -1,34 +1,26 @@
+@import "./theme.css";
+
 .track-list {
     width: 100%;
 }
 
 .track-list__header {
     display: grid;
-    grid-template-columns:
-        48px
-        1fr
-        300px;
-
-    padding: 0.75rem 1rem;
-
-    border-bottom: 1px solid #ddd;
-
-    font-size: 0.9rem;
-    font-weight: 600;
+    grid-template-columns: 48px 1fr 300px;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    color: var(--color-text-muted);
 }
 
 .track-row {
     display: grid;
-    grid-template-columns:
-        48px
-        1fr
-        300px;
-
+    grid-template-columns: 48px 1fr 300px;
     align-items: center;
-
-    padding: 0.75rem 1rem;
-
-    border-radius: 4px;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
 }
 
 .track-row .playlist-button--track-play {
@@ -36,7 +28,7 @@
 }
 
 .track-row:hover {
-    background: rgba(0, 0, 0, 0.10);
+    background: rgba(119, 82, 83, 0.08);
 }
 
 .track-row:hover .track-index {
@@ -50,19 +42,22 @@
 .track-title {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--space-3);
 }
 
 .track-cover {
     width: 40px;
     height: 40px;
     object-fit: cover;
+    border-radius: 4px;
 }
 
 .track-name {
-    font-weight: 500;
+    font-weight: var(--weight-medium);
+    color: var(--color-heading);
 }
 
 .track-artists {
-    opacity: 0.8;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
 }

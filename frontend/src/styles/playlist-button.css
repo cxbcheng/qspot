@@ -1,13 +1,12 @@
+@import "./theme.css";
+
 .playlist-button {
     border: none;
-    border-radius: 999px;
+    border-radius: var(--radius-full);
     cursor: pointer;
-    font-family: inherit;
-    font-weight: 600;
-    transition:
-            transform 0.15s ease,
-            box-shadow 0.15s ease,
-            background 0.15s ease;
+    font-family: var(--font-body), sans-serif;
+    font-weight: var(--weight-semibold);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
 }
 
 .playlist-button:hover {
@@ -21,96 +20,64 @@
 .playlist-button--shuffle {
     width: 64px;
     height: 64px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     padding: 0;
-
-    border-radius: 50%;
-
-    background: #1db954;
-
-    box-shadow:
-            0 8px 18px rgba(29, 185, 84, 0.3);
+    background: var(--color-success);
+    box-shadow: 0 8px 18px var(--color-success-shadow);
 }
 
 .playlist-button--shuffle:hover {
-    background: #1ed760;
-
-    box-shadow:
-            0 12px 24px rgba(29, 185, 84, 0.4);
+    background: var(--color-success-hover);
+    box-shadow: 0 12px 24px var(--color-success-shadow);
 }
 
 .playlist-button__icon {
     width: 24px;
     height: 24px;
-
     object-fit: contain;
-
     pointer-events: none;
 }
 
 .playlist-button--secondary {
     padding: 12px 20px;
-
-    background: #ececec;
-    color: #222;
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
 }
 
 .playlist-button--secondary:hover {
-    background: #dfdfdf;
+    background: var(--color-surface-alt);
 }
 
 .playlist-button--primary {
     padding: 12px 20px;
-
-    background: #775253;
-    color: antiquewhite;
-
-    box-shadow:
-            0 8px 18px rgba(119, 82, 83, 0.25);
+    background: var(--color-primary);
+    color: var(--color-background);
+    box-shadow: var(--shadow-sm);
 }
 
 .playlist-button--primary:hover {
-    background: #684647;
+    background: var(--color-primary-dark);
 }
 
 .playlist-button--play {
     width: 64px;
     height: 64px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     padding: 0;
-
-    border: none;
-    border-radius: 50%;
-
-    background: #1db954;
-    color: black;
-
-    cursor: pointer;
-
-    box-shadow:
-            0 8px 18px rgba(29, 185, 84, 0.35);
-
-    transition:
-            transform 0.15s ease,
-            background 0.15s ease,
-            box-shadow 0.15s ease;
+    background: var(--spotify-green);
+    color: var(--spotify-black);
+    box-shadow: 0 8px 18px var(--color-success-shadow);
 }
 
 .playlist-button--play:hover {
-    background: #1ed760;
-
+    background: var(--color-success-hover);
     transform: scale(1.05);
-
-    box-shadow:
-            0 12px 24px rgba(29, 185, 84, 0.45);
+    box-shadow: 0 12px 24px var(--color-success-shadow);
 }
 
 .playlist-button--play:active {
@@ -118,45 +85,33 @@
 }
 
 .playlist-button--play:focus-visible {
-    outline: 3px solid rgba(255,255,255,0.9);
+    outline: 3px solid var(--color-primary-light);
     outline-offset: 3px;
 }
 
 .playlist-button__play-icon {
     width: 40px;
     height: 40px;
-
     fill: currentColor;
-
     margin-right: 1px;
 }
 
 .playlist-button--track-play {
     width: 32px;
     height: 32px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     padding: 0;
-
     background: transparent;
-    color: white;
-
-    border: none;
-    border-radius: 0;
-
+    color: var(--color-text);
     box-shadow: none;
 }
 
 .playlist-button--track-play:hover {
     background: transparent;
-
-    color: #f0f0f0;
-
+    color: var(--color-primary);
     transform: scale(1.05);
-
     box-shadow: none;
 }
 
@@ -165,17 +120,14 @@
 }
 
 .playlist-button--track-play:focus-visible {
-    outline: 2px solid rgba(255, 255, 255, 0.9);
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
 }
 
 .playlist-button__track-play-icon {
     width: 20px;
     height: 20px;
-
     fill: currentColor;
-
     pointer-events: none;
-
     margin-right: 40px;
 }
