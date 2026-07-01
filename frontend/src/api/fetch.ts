@@ -19,7 +19,7 @@ export async function fetchPlaylists(): Promise<Response> {
 }
 
 export async function fetchPlaylist(playlistId: string): Promise<Response> {
-    return _apiFetch(`/api/me/playlists/${playlistId}`);
+    return _apiFetch(`/api/playlists/${playlistId}`);
 }
 
 export async function createShuffledPlaylist(
