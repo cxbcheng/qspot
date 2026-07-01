@@ -52,3 +52,21 @@
     font-weight: var(--weight-medium);
     color: var(--color-text);
 }
+
+.navbar__logo {
+    font-family: var(--font-display), sans-serif;
+    font-size: var(--text-xl);
+    font-weight: var(--weight-bold);
+    color: var(--color-heading);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+    transition: opacity var(--transition-fast);
+}
+.navbar__logo:hover {
+    opacity: 0.8;
+}
+.navbar__logo:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 4px;
+    border-radius: 2px;
+}

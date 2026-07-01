@@ -3,6 +3,7 @@ import "../styles/navbar.css";
 import "../styles/dropdown.css";
 import {UserProfile} from "../../../shared/types/UserProfile.ts";
 import {useLogout} from "../hooks/useLogout.ts";
+import { Link } from "react-router-dom";
 
 export function Navbar({ profile }: { profile: UserProfile }) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -27,6 +28,9 @@ export function Navbar({ profile }: { profile: UserProfile }) {
 
     return (
         <nav className="navbar">
+            <Link to="/" className="navbar__logo">
+                QSpot
+            </Link>
             <div className="navbar__spacer" />
             <div className="navbar__profile-container" ref={menuRef}>
                 <button
