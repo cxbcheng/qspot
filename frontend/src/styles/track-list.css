@@ -55,9 +55,19 @@
 .track-name {
     font-weight: var(--weight-medium);
     color: var(--color-heading);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
 }
 
 .track-artists {
     color: var(--color-text-muted);
     font-size: var(--text-sm);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
 }
