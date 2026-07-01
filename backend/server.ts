@@ -49,6 +49,10 @@ if (!FRONTEND_URI) {
     throw new Error('FRONTEND_URI is missing');
 }
 
+if (process.env.NODE_ENV === 'production' && !process.env.SESSION_SECRET) {
+    throw new Error('FATAL: SESSION_SECRET environmental variable is not defined.');
+}
+
 const SPOTIFY_CREDENTIALS: SpotifyCredentials = {
     clientId: CLIENT_ID,
     clientSecret: CLIENT_SECRET,
@@ -68,7 +72,7 @@ app.use(
     session({
         secret:
             process.env.SESSION_SECRET ??
-            'spotify-session-secret',
+            'dev-session-secret',
         resave: false,
         saveUninitialized: false,
         cookie: {
