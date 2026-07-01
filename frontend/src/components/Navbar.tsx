@@ -1,29 +1,57 @@
-import {UserProfile} from "../../../shared/types/UserProfile.ts";
+import { useState, useRef, useEffect } from "react";
 import "../styles/navbar.css";
+import "../styles/dropdown.css";
+import {UserProfile} from "../../../shared/types/UserProfile.ts";
+import {useLogout} from "../hooks/useLogout.ts";
 
-interface NavbarProps {
-    profile: UserProfile;
-}
+export function Navbar({ profile }: { profile: UserProfile }) {
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
+    const logout = useLogout();
+    const displayName = profile?.display_name ?? "";
+    const avatarUrl = profile?.images[0]?.url;
 
-export function Navbar({profile}: NavbarProps) {
-    const avatarUrl: string = profile?.images[0]?.url;
+    if (!displayName || !avatarUrl) {
+        console.error("Failed to display user profile in Navbar.");
+    }
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setIsDropdownOpen(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
     return (
         <nav className="navbar">
             <div className="navbar__spacer" />
-
-            <div className="navbar__profile">
-                {avatarUrl && (
-                    <img
-                        src={avatarUrl}
-                        alt={profile.display_name}
-                        className="navbar__avatar"
-                    />
+            <div className="navbar__profile-container" ref={menuRef}>
+                <button
+                    className="navbar__profile-button"
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    aria-expanded={isDropdownOpen}
+                    aria-haspopup="true"
+                >
+                    <div className="navbar__profile">
+                        {avatarUrl && (
+                            <img
+                                src={avatarUrl}
+                                alt={displayName}
+                                className="navbar__avatar"
+                            />
+                        )}
+                    </div>
+                </button>
+                {isDropdownOpen && (
+                    <div className="dropdown-menu">
+                        <button className="dropdown-menu__item dropdown-menu__item--danger" onClick={logout}>
+                            Log out
+                        </button>
+                    </div>
                 )}
-
-                <span className="navbar__name">
-                    {profile.display_name}
-                </span>
             </div>
         </nav>
     );

@@ -81,7 +81,7 @@ export function Component() {
     }
 
     return (
-        <><Navbar profile={res.profile}/>
+        <><Navbar profile={res.profile} />
             <main className="playlist-page">
                 <header className="playlist-header">
                     <img

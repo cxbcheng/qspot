@@ -379,6 +379,16 @@ app.get('/health', (_req, res) => {
     });
 });
 
+app.post('/logout', async (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({error: "logout_failed"});
+        }
+        return res.json({success: true});
+    });
+});
+
 app.listen(PORT, () => {
     console.log(
         `Backend listening on port ${PORT}`

@@ -41,3 +41,7 @@ export async function startPlayback(uris: string[]): Promise<Response> {
         body: JSON.stringify({ uris }),
     });
 }
+
+export async function logOut(): Promise<Response> {
+    return await _apiFetch("/logout", {method: "POST"});
+}
