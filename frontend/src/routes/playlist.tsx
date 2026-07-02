@@ -82,11 +82,15 @@ export function Component() {
         setTracks(classicalShuffle(tracks));
     }
 
-    async function handleCreateShuffledPlaylist() {
+    async function callCreateShuffledPlaylist() {
         const uris: string[] = tracks.map(track => track.item.uri);
         const response = await createShuffledPlaylist(playlist.id, uris);
         const shuffledPlaylist = await response.json();
         return navigate(`/playlists/${shuffledPlaylist.playlistId}`);
+    }
+
+    async function handleCreatePlaylist() {
+        await asyncLock.run(() => callCreateShuffledPlaylist());
     }
 
     function revertShuffle() {
@@ -181,7 +185,7 @@ export function Component() {
 
                     <button
                         className="playlist-button playlist-button--primary"
-                        onClick={handleCreateShuffledPlaylist}
+                        onClick={handleCreatePlaylist}
                     >
                         Create Playlist
                     </button>
