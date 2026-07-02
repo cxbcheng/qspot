@@ -81,8 +81,8 @@
     box-shadow: 0 12px 24px var(--color-success-shadow);
 }
 
-.playlist-button--play:active {
-    transform: scale(1);
+.playlist-button:active {
+    transform: scale(0.95);
 }
 
 .playlist-button--play:focus, .playlist-button--shuffle:focus {
