@@ -1,0 +1,47 @@
+.rate-limit__card {
+    max-width: 420px;
+    width: 100%;
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.rate-limit__icon {
+    font-size: var(--text-2xl);
+    line-height: 1;
+    margin: 0;
+}
+
+.rate-limit__timer {
+    background: var(--color-surface-alt);
+    padding: var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+}
+
+.rate-limit__timer--ready {
+    color: var(--color-success);
+    background: var(--color-success-shadow);
+}
+
+.rate-limit__button {
+    background: var(--color-primary);
+    color: var(--color-surface);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: var(--space-3) var(--space-4);
+    font-weight: var(--weight-semibold);
+    transition: background var(--transition-fast);
+}
+
+.rate-limit__button:hover:not(:disabled) {
+    background: var(--color-primary-dark);
+}
+
+.rate-limit__button:disabled {
+    background: var(--color-border);
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+}

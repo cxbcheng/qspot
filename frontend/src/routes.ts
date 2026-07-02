@@ -1,9 +1,10 @@
-import Root from "./root.tsx";
+import Root, {ErrorBoundary} from "./root.tsx";
 
 export default [
     {
         path: "/",
         Component: Root,
+        ErrorBoundary,
         children: [
             {
                 index: true,
