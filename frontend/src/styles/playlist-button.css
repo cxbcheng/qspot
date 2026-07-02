@@ -85,8 +85,8 @@
     transform: scale(1);
 }
 
-.playlist-button--play:focus-visible {
-    outline: 3px solid var(--color-primary-light);
+.playlist-button--play:focus-visible, .playlist-button--shuffle:focus-visible {
+    outline: 3px solid var(--color-primary-dark);
     outline-offset: 3px;
 }
 
