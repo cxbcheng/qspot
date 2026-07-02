@@ -10,7 +10,7 @@ export function Navbar({ profile }: { profile: UserProfile }) {
     const menuRef = useRef<HTMLDivElement>(null);
     const logout = useLogout();
     const displayName = profile?.display_name ?? "";
-    const avatarUrl = profile?.images[0]?.url;
+    const avatarUrl = profile?.images?.[0]?.url;
 
     if (!displayName || !avatarUrl) {
         console.error("Failed to display user profile in Navbar.");
