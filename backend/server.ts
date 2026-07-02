@@ -14,6 +14,7 @@ import {
 } from "./services/spotify";
 import {UserProfile} from "../shared/types/UserProfile";
 import rateLimit from "express-rate-limit";
+import {Playlists} from "../shared/types/Playlist";
 
 declare module 'express-session' {
     interface SessionData {
@@ -21,6 +22,8 @@ declare module 'express-session' {
         spotify?: {
             access_token: string;
             refresh_token: string;
+            profile?: UserProfile;
+            playlists?: Playlists;
         };
         callback?: string;
     }
@@ -81,7 +84,7 @@ app.use(
             secure:
                 process.env.NODE_ENV === 'production',
             sameSite: 'lax',
-            maxAge: 300000
+            maxAge: 300000  // 5 minutes
         }
     })
 );
@@ -273,35 +276,34 @@ app.post('/refresh_token', async (req, res) => {
     }
 });
 
-/**
- * GET /api/me
- * Return current user profile data if authenticated, 401 status otherwise.
- */
 app.get("/api/me", async (req, res) => {
-    if (!req.session.spotify) return res.status(401).json({error: 'unauthorized'});
-    const accessToken: string = req.session.spotify.access_token;
+    const spotify = req.session.spotify;
+    if (!spotify) return res.status(401).json({error: 'unauthorized'});
 
-    const data: UserProfile = await getProfile(accessToken);
-    res.json(data);
+    // Look for profile in session cache before fetching from Spotify
+    if (spotify.profile) return res.json(spotify.profile);
+
+    const profile: UserProfile = await getProfile(spotify.access_token);
+    spotify.profile = profile;
+    return res.json(profile);
 });
 
-/**
- * GET /api/me/playlists
- * Return current user's playlists if authenticated, 401 status otherwise.
- */
 app.get("/api/me/playlists", async (req, res) => {
-    if (!req.session.spotify) return res.status(401).json({error: 'unauthorized'});
-    const accessToken: string = req.session.spotify.access_token;
+    const spotify = req.session.spotify;
+    if (!spotify) return res.status(401).json({error: 'unauthorized'});
 
-    const data = await getUserPlaylists(accessToken);
-    res.json(data);
+    if (spotify.playlists) return res.json(spotify.playlists);
+
+    const playlists = await getUserPlaylists(spotify.access_token);
+    spotify.playlists = playlists;
+    res.json(playlists);
 });
 
 app.get("/api/me/player/devices", async (req, res) => {
-    if (!req.session.spotify) return res.status(401).json({error: 'unauthorized'});
-    const accessToken: string = req.session.spotify.access_token;
-    const data = await getDevices(accessToken);
-    res.json(data);
+    const spotify = req.session.spotify;
+    if (!spotify) return res.status(401).json({error: 'unauthorized'});
+    const devices = await getDevices(spotify.access_token);
+    res.json(devices);
 });
 
 app.put("/api/me/player", async (req, res) => {
@@ -323,30 +325,22 @@ app.put("/api/me/player", async (req, res) => {
     }
 });
 
-/**
- * GET /api/playlists/:playlistId
- * Return playlist data if authorized, 400 for missing playlist id, 500 for failed fetch.
- */
 app.get("/api/playlists/:playlistId", async (req, res) => {
-    if (!req.session.spotify) return res.status(401).json({error: 'unauthorized'});
-    const accessToken: string = req.session.spotify.access_token;
+    const spotify = req.session.spotify;
+    if (!spotify) return res.status(401).json({error: 'unauthorized'});
 
     const playlistId = req.params.playlistId;
-    if (!playlistId) return res.status(400).json({
-        error: 'missing_playlist_id'
-    });
+    if (!playlistId) return res.status(400).json({error: 'missing_playlist_id'});
 
     try {
-        const playlist = await getPlaylist(accessToken, playlistId);
+        const playlist = await getPlaylist(spotify.access_token, playlistId);
         return res.json(playlist);
     } catch (e) {
         if (e instanceof SpotifyApiError) {
             return res.status(e.status).send(e.message);
         }
 
-        return res.status(500).json({
-            error: 'failed_to_fetch_playlist'
-        });
+        return res.status(500).json({error: 'failed_to_fetch_playlist'});
     }
 });
 
@@ -355,8 +349,9 @@ app.get("/api/playlists/:playlistId", async (req, res) => {
  * Creates new, shuffled playlist from the original playlist.
  */
 app.post("/api/playlists/:playlistId/create-shuffle", async (req, res) => {
-    if (!req.session.spotify) return res.status(401).json({error: "unauthorized"});
-    const accessToken = req.session.spotify.access_token;
+    const spotify = req.session.spotify;
+    if (!spotify) return res.status(401).json({error: "unauthorized"});
+    const accessToken = spotify.access_token;
 
     // A predetermined shuffle order (list of playlist item URIs)
     const uris = req.body.uris;
@@ -374,13 +369,11 @@ app.post("/api/playlists/:playlistId/create-shuffle", async (req, res) => {
             false
         );
 
-        await copyPlaylistImage(
-            accessToken,
-            playlist.id,
-            newPlaylist.id,
-        );
-
+        await copyPlaylistImage(accessToken, playlist.id, newPlaylist.id);
         await addTracksToPlaylist(accessToken, newPlaylist.id, uris);
+
+        // Cache is now outdated
+        delete spotify.playlists;
 
         return res.json({
             playlistId: newPlaylist.id,
@@ -415,9 +408,7 @@ app.put("/api/me/player/play", async (req, res) => {
             return res.status(e.status).send(e.message);
         }
 
-        res.status(500).json({
-            error: "failed_to_start_playback",
-        });
+        res.status(500).json({error: "failed_to_start_playback"});
     }
 });
 
