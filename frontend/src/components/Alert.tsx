@@ -1,24 +1,89 @@
+import {useEffect, useState, RefObject, useRef} from "react";
+import "../styles/alert.css";
+
 /**
  * Alert
  *
- * A dismissible, visually distinct inline alert used to surface
- * human-friendly error messages (e.g. failed Spotify login attempts).
- *
- * The component is intentionally presentation-only: the parent decides
- * *whether* to render it (typically derived from a URL search param), and
- * is responsible for clearing that state when `onDismiss` fires.
+ * A multimode alert component. If a `targetRef` is provided, it renders
+ * directly below that element like a contextual chat bubble.
+ * Otherwise, it falls back to a floating banner at the bottom of the viewport.
  */
-
 export interface AlertProps {
-    /** Human-friendly message to display to the user. */
     message: string;
-    /** Called when the user dismisses the alert (e.g. clears it from the URL). */
     onDismiss: () => void;
+    /** Optional React Ref of the element this alert should point to. */
+    targetRef?: RefObject<HTMLElement | null>;
+    duration?: number;
 }
 
-export function Alert({ message, onDismiss }: AlertProps) {
+export function Alert({ message, onDismiss, targetRef, duration }: AlertProps) {
+    const [coords, setCoords] = useState<{ top: number; left: number } | null>(null);
+    const [isLeaving, setIsLeaving] = useState(false); // Track exit animation state
+    const isAnchored = !!targetRef?.current;
+    const alertRef = useRef<HTMLDivElement>(null);
+
+    // Trigger exit animation before unmounting
+    const triggerDismiss = useRef(() => {});
+    triggerDismiss.current = () => {
+        setIsLeaving(true);
+        setTimeout(onDismiss, 200); // Account for 0.2s exit animation duration
+    };
+
+    // Autofocus the alert when it appears
+    useEffect(() => {
+        alertRef.current?.focus();
+    }, []);
+
+    // Auto-dismiss
+    useEffect(() => {
+        if (!duration || duration <= 0) return;
+        const timer = setTimeout(triggerDismiss.current, duration);
+        return () => clearTimeout(timer);
+    }, [duration, message, onDismiss]);
+
+    useEffect(() => {
+        if (!targetRef?.current) {
+            setCoords(null);
+            return;
+        }
+
+        const updatePosition = () => {
+            if (!targetRef.current) return;
+
+            const rect = targetRef.current.getBoundingClientRect();
+
+            // Calculate absolute page positions (including page scroll)
+            setCoords({
+                top: rect.bottom + window.scrollY + 10, // 10px spacing below the element
+                left: rect.left + window.scrollX,
+            });
+        };
+
+        // Run initially
+        updatePosition();
+
+        // Keep position accurate during window resizing
+        window.addEventListener("resize", updatePosition);
+        return () => window.removeEventListener("resize", updatePosition);
+    }, [targetRef]);
+
+    // Apply absolute inline coordinates only if an anchor element is active
+    const placementStyles = isAnchored && coords
+        ? { top: `${coords.top}px`, left: `${coords.left}px` }
+        : {};
+
+    // Dynamic classes based on state and placement mode
+    const baseClass = isAnchored ? "alert--anchored" : "alert--fallback";
+    const animationClass = isLeaving ? "alert--leaving" : "";
+
     return (
-        <div className="alert" role="alert">
+        <div
+            className={`alert ${baseClass} ${animationClass}`}
+            style={placementStyles}
+            role="alert"
+            ref={alertRef}
+            tabIndex={-1}
+        >
             <svg
                 className="alert__icon"
                 viewBox="0 0 24 24"
