@@ -13,6 +13,7 @@ import {
     startPlayback, transferPlayback
 } from "./services/spotify";
 import {UserProfile} from "../shared/types/UserProfile";
+import rateLimit from "express-rate-limit";
 
 declare module 'express-session' {
     interface SessionData {
@@ -84,6 +85,42 @@ app.use(
         }
     })
 );
+
+// API rate limiters using express-rate-limit
+const apiLimiter = rateLimit({
+    windowMs: 60000,    // 1 minute
+    limit: 120,         // 120 requests/minute
+    standardHeaders: "draft-7",
+    legacyHeaders: false,
+    skipSuccessfulRequests: false,
+    skipFailedRequests: false,
+});
+
+const playbackLimiter = rateLimit({
+    windowMs: 60000,
+    limit: 30,
+    skip: req => !req.session.spotify,
+    keyGenerator: req => req.session.id,
+    standardHeaders: "draft-7",
+    legacyHeaders: false,
+    handler: (_req, res) => {
+        res.status(429).json({error: "rate_limit_exceeded"});
+    },
+});
+
+const createPlaylistLimiter = rateLimit({
+    windowMs: 60000,
+    limit: 10,
+    standardHeaders: "draft-7",
+    legacyHeaders: false,
+    handler: (_req, res) => {
+        res.status(429).json({error: "rate_limit_exceeded"});
+    },
+})
+
+app.use("/api", apiLimiter);
+app.use("/api/me/player/play", playbackLimiter);
+app.use("/api/playlists/:playlistId/create-shuffle", createPlaylistLimiter);
 
 app.use(express.json());
 
