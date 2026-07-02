@@ -39,7 +39,7 @@ export function Component() {
                     <h1 className="login-hero__title">QSpot</h1>
                     {/*<p className="login-hero__subtitle">Playlist tools.</p>*/}
                 </div>
-                {errorMessage && <Alert message={errorMessage} onDismiss={handleDismissAlert} />}
+                {errorMessage && <Alert message={errorMessage} onDismiss={handleDismissAlert} duration={3000} />}
                 <div className="login-hero__actions">
                     <SpotifyButton href={spotifyLoginUrl} className="login-card__cta" aria-describedby="spotify-cta-label" />
                     <p className="login-hero__footnote">Uses the Spotify Web API.</p>
