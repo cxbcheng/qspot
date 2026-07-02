@@ -29,7 +29,7 @@ export function Navbar({ profile }: { profile: UserProfile }) {
     return (
         <nav className="navbar">
             <Link to="/" className="navbar__logo">
-                QSpot
+                Classically
             </Link>
             <div className="navbar__spacer" />
             <div className="navbar__profile-container" ref={menuRef}>

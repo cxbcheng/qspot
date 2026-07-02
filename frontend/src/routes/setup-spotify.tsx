@@ -62,7 +62,7 @@ export function Component() {
 
                         <p>
                             Check the GitHub repo for details on Spotify&rsquo;s
-                            current API limits, and how to run QSpot yourself
+                            current API limits, and how to run Classically yourself
                             with your own developer app.
                         </p>
 
@@ -72,7 +72,7 @@ export function Component() {
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            View QSpot on GitHub <span aria-hidden="true">→</span>
+                            View Classically on GitHub <span aria-hidden="true">→</span>
                         </a>
                     </section>
                 </div>

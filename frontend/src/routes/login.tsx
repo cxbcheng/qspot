@@ -35,9 +35,9 @@ export function Component() {
             <div className="login-page__glow" />
             <section className="login-hero">
                 <div className="login-hero__content">
-                    <p className="login-hero__eyebrow">Playlists if they could be color graded.</p>
-                    <h1 className="login-hero__title">QSpot</h1>
-                    {/*<p className="login-hero__subtitle">Playlist tools.</p>*/}
+                    <p className="login-hero__eyebrow">Classical music served like a cup of coffee.</p>
+                    <h1 className="login-hero__title">Classically</h1>
+                    {/*<p className="login-hero__subtitle">Playlist tools for classical music.</p>*/}
                 </div>
                 {errorMessage && <Alert message={errorMessage} onDismiss={handleDismissAlert} duration={3000} />}
                 <div className="login-hero__actions">

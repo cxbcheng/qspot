@@ -10,7 +10,7 @@ import {
  *
  * A full-redirect link styled as Spotify's own brand guidelines expect
  * (green field, black wordmark/icon) — intentionally kept visually separate
- * from QSpot's coffee-brown identity so the button stays recognizable as
+ * from Classically's coffee-brown identity so the button stays recognizable as
  * "the Spotify one" on a page that otherwise looks nothing like Spotify.
  *
  * Renders as a real <a> (not a client-side route) since Spotify OAuth
