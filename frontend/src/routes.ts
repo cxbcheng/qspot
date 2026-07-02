@@ -18,10 +18,12 @@ export default [
     },
     {
         path: "/playlists/:playlistId",
+        ErrorBoundary,
         lazy: () => import("./routes/playlist"),
     },
     {
         path: "/login",
+        ErrorBoundary,
         Component: Root,
         children: [
             {
@@ -32,6 +34,7 @@ export default [
     },
     {
         path: "/setup/spotify",
+        ErrorBoundary,
         lazy: () => import("./routes/setup-spotify.tsx"),
     }
 ];
