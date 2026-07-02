@@ -1,5 +1,5 @@
 
-# QSpot
+# Classically
 
 A Spotify companion app that provides playlist tools with smart classical-music shuffling, queueing, and playlist cloning.
 ## Built With
@@ -26,9 +26,9 @@ A Spotify companion app that provides playlist tools with smart classical-music 
 
 ## Spotify API Restrictions
 
-Due to Spotify's [Web API quota and development policies](https://developer.spotify.com/documentation/web-api/concepts/quota-modes), QSpot currently operates in **Development Mode**. As a result, only Spotify accounts explicitly added to the application's allowlist can access Spotify Web API data.
+Due to Spotify's [Web API quota and development policies](https://developer.spotify.com/documentation/web-api/concepts/quota-modes), Classically currently operates in **Development Mode**. As a result, only Spotify accounts explicitly added to the application's allowlist can access Spotify Web API data.
 
-These restrictions make it impractical to provide as a publicly accessible service. For this reason, QSpot is distributed primarily as a GitHub project intended to be run locally with a personal Spotify Developer application.
+These restrictions make it impractical to provide as a publicly accessible service. For this reason, Classically is distributed primarily as a GitHub project intended to be run locally with a personal Spotify Developer application.
 
 The broader impact of these policy changes on independent developers can be read [here](https://spotify.leemartin.com/).
 

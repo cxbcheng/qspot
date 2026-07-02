@@ -7,7 +7,7 @@ import {TrackList} from "../components/TrackList.tsx";
 import {classicalShuffle} from "../../../shared/utils/shuffle.ts";
 import {useEffect, useRef, useState} from "react";
 import {PlayButton} from "../components/PlayButton.tsx";
-import {createShuffledPlaylist, fetchPlaylist, fetchProfile, startPlayback} from "../api/fetch.ts";
+import {createShuffledPlaylist, fetchPlaylist, fetchProfile, attemptPlayback} from "../api/fetch.ts";
 import {Navbar} from "../components/Navbar.tsx";
 import {Alert} from "../components/Alert.tsx";
 
@@ -90,7 +90,7 @@ export function Component() {
     async function playShuffled(fromIndex: number = 0) {
         const uris: string[] = tracks.map(track => track.item.uri).splice(fromIndex);
 
-        const response = await startPlayback(uris);
+        const response = await attemptPlayback(uris);
 
         if (!response.ok) {
             if (response.status === 404) {
@@ -117,7 +117,7 @@ export function Component() {
                         message={errorMessage}
                         onDismiss={() => setErrorMessage(null)}
                         targetRef={playButtonRef}
-                        duration={3000}
+                        duration={5000}
                     />
                 )}
 

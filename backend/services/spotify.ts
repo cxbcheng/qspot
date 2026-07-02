@@ -1,6 +1,7 @@
 import {UserProfile} from "../../shared/types/UserProfile";
 import {Playlist, Playlists} from "../../shared/types/Playlist";
 import { Buffer } from "buffer";
+import {Device} from "../../shared/types/Device";
 
 const SPOTIFY_API = "https://api.spotify.com/v1";
 const SPOTIFY_ACCOUNTS_API = "https://accounts.spotify.com";
@@ -113,6 +114,10 @@ export function getPlaylist(accessToken: string, playlistId: string): Promise<Pl
     return _spotifyFetchJson(accessToken, `/playlists/${playlistId}`);
 }
 
+export function getDevices(accessToken: string): Promise<Device[]> {
+    return _spotifyFetchJson(accessToken, "/me/player/devices");
+}
+
 export function createPlaylist(
     accessToken: string,
     name: string,
@@ -223,10 +228,27 @@ export async function addTracksToQueue(accessToken: string, uris: string[]): Pro
 export async function startPlayback(
     accessToken: string,
     uris: string[],
+    deviceId?: string,
 ): Promise<void> {
-    await _spotifyFetch(accessToken, "/me/player/play", {
+    const path = deviceId
+        ? `/me/player/play?device_id=${encodeURIComponent(deviceId)}`
+        : "/me/player/play";
+
+    await _spotifyFetch(accessToken, path, {
         method: "PUT",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({ uris }),
+    });
+}
+
+export async function transferPlayback(
+    accessToken: string,
+    deviceId: string,
+    play?: boolean,
+): Promise<void> {
+    await _spotifyFetch(accessToken, "/me/player", {
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ device_ids: [deviceId], play }),
     });
 }

@@ -6,11 +6,11 @@ import 'dotenv/config';
 import {
     addTracksToPlaylist,
     copyPlaylistImage,
-    createPlaylist, exchangeAuthCodeForToken,
+    createPlaylist, exchangeAuthCodeForToken, getDevices,
     getPlaylist,
     getProfile,
     getUserPlaylists, refreshAccessToken, SpotifyApiError, SpotifyCredentials,
-    startPlayback
+    startPlayback, transferPlayback
 } from "./services/spotify";
 import {UserProfile} from "../shared/types/UserProfile";
 
@@ -241,10 +241,7 @@ app.post('/refresh_token', async (req, res) => {
  * Return current user profile data if authenticated, 401 status otherwise.
  */
 app.get("/api/me", async (req, res) => {
-    if (!req.session.spotify) return res.status(401).json({
-        error: 'unauthorized'
-    });
-
+    if (!req.session.spotify) return res.status(401).json({error: 'unauthorized'});
     const accessToken: string = req.session.spotify.access_token;
 
     const data: UserProfile = await getProfile(accessToken);
@@ -256,14 +253,37 @@ app.get("/api/me", async (req, res) => {
  * Return current user's playlists if authenticated, 401 status otherwise.
  */
 app.get("/api/me/playlists", async (req, res) => {
-    if (!req.session.spotify) return res.status(401).json({
-        error: 'unauthorized'
-    });
-
+    if (!req.session.spotify) return res.status(401).json({error: 'unauthorized'});
     const accessToken: string = req.session.spotify.access_token;
 
     const data = await getUserPlaylists(accessToken);
     res.json(data);
+});
+
+app.get("/api/me/player/devices", async (req, res) => {
+    if (!req.session.spotify) return res.status(401).json({error: 'unauthorized'});
+    const accessToken: string = req.session.spotify.access_token;
+    const data = await getDevices(accessToken);
+    res.json(data);
+});
+
+app.put("/api/me/player", async (req, res) => {
+    if (!req.session.spotify) return res.status(401).json({error: 'unauthorized'});
+    const accessToken = req.session.spotify.access_token;
+    const { deviceId, play } = req.body;
+
+    try {
+        await transferPlayback(accessToken, deviceId, play);
+        res.json({ success: true });
+    } catch (e) {
+        if (e instanceof SpotifyApiError) {
+            return res.status(e.status).send(e.message);
+        }
+
+        res.status(500).json({
+            error: "failed_to_transfer_playback",
+        });
+    }
 });
 
 /**
@@ -271,10 +291,7 @@ app.get("/api/me/playlists", async (req, res) => {
  * Return playlist data if authorized, 400 for missing playlist id, 500 for failed fetch.
  */
 app.get("/api/playlists/:playlistId", async (req, res) => {
-    if (!req.session.spotify) return res.status(401).json({
-        error: 'unauthorized'
-    });
-
+    if (!req.session.spotify) return res.status(401).json({error: 'unauthorized'});
     const accessToken: string = req.session.spotify.access_token;
 
     const playlistId = req.params.playlistId;
@@ -301,9 +318,8 @@ app.get("/api/playlists/:playlistId", async (req, res) => {
  * Creates new, shuffled playlist from the original playlist.
  */
 app.post("/api/playlists/:playlistId/create-shuffle", async (req, res) => {
-    if (!req.session.spotify) return res.status(401).json({
-        error: "unauthorized",
-    });
+    if (!req.session.spotify) return res.status(401).json({error: "unauthorized"});
+    const accessToken = req.session.spotify.access_token;
 
     // A predetermined shuffle order (list of playlist item URIs)
     const uris = req.body.uris;
@@ -312,7 +328,6 @@ app.post("/api/playlists/:playlistId/create-shuffle", async (req, res) => {
     const playlistId = req.params.playlistId;
 
     try {
-        const accessToken = req.session.spotify.access_token;
         const playlist = await getPlaylist(accessToken, playlistId);
 
         const newPlaylist = await createPlaylist(
@@ -349,23 +364,19 @@ app.post("/api/playlists/:playlistId/create-shuffle", async (req, res) => {
 });
 
 app.put("/api/me/player/play", async (req, res) => {
-    if (!req.session.spotify) return res.status(401).json({
-        error: "unauthorized",
-    });
+    if (!req.session.spotify) return res.status(401).json({error: "unauthorized"});
 
     // A predetermined shuffle order (list of playlist item URIs)
-    const uris = req.body.uris;
+    const { uris, deviceId } = req.body;
 
     try {
         const accessToken = req.session.spotify.access_token;
-        await startPlayback(accessToken, uris);
+        await startPlayback(accessToken, uris, deviceId);
         res.json({ success: true });
     } catch (e) {
         if (e instanceof SpotifyApiError) {
             return res.status(e.status).send(e.message);
         }
-
-        console.error(e);
 
         res.status(500).json({
             error: "failed_to_start_playback",
