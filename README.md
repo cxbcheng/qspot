@@ -53,8 +53,8 @@ Copy the **Client ID** and **Client Secret**.
 **2. Clone and install:**
 
 ```bash
-git clone https://github.com/cxbcheng/qspot.git
-cd qspot
+git clone https://github.com/cxbcheng/classically.git
+cd classically
 npm install
 ```
 
@@ -105,4 +105,4 @@ Distributed under MIT License. See `LICENSE.txt` for more information.
 
 Christian Cheng - [@cxbcheng](https://www.github.com/cxbcheng) - [LinkedIn](www.linkedin.com/in/christian-cheng-159964372)
 
-Project Link: https://github.com/cxbcheng/qspot
+Project Link: https://github.com/cxbcheng/classically

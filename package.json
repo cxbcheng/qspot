@@ -14,7 +14,7 @@
     "react-router-dom": "^7.17.0",
     "zustand": "^5.0.14"
   },
-  "name": "qspot",
+  "name": "classically",
   "version": "1.0.0",
   "description": "A Spotify companion app that provides classical-music helper tools for playlists with smart classical-music shuffling, queueing, and playlist cloning.",
   "main": "index.js",
@@ -27,15 +27,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cxbcheng/qspot.git"
+    "url": "git+https://github.com/cxbcheng/classically.git"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/cxbcheng/qspot/issues"
+    "url": "https://github.com/cxbcheng/classically/issues"
   },
-  "homepage": "https://github.com/cxbcheng/qspot#readme",
+  "homepage": "https://github.com/cxbcheng/classically#readme",
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
