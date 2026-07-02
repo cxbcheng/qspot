@@ -20,9 +20,14 @@ A Spotify companion app that provides playlist tools with smart classical-music 
 
 ## Screenshots
 
-<img width="1920" height="1200" alt="App Login Page" src="https://github.com/user-attachments/assets/3df7c9db-0b90-4a10-a75d-58e20f2a3e8c" />
-<img width="1896" height="1198" alt="Classical Playlist View" src="https://github.com/user-attachments/assets/cb2f419e-5391-49ed-90cb-9fae57564f95" />
-<img width="1893" height="1198" alt="Classical Playlist Shuffled" src="https://github.com/user-attachments/assets/1a87bcce-85b0-4b42-8348-0b43dfe6cc59" />
+<img width="1920" height="1200" alt="image" src="https://github.com/user-attachments/assets/fed025b0-0053-475a-8afc-ed385504e54a" />
+<!-- <img width="512" height="370" alt="image" src="https://github.com/user-attachments/assets/a753df90-efa7-4713-be53-9ebc5f621ae4" /> -->
+<!-- <img width="512" height="420" alt="image" src="https://github.com/user-attachments/assets/5e8ed5ee-47da-4da6-b38d-7b0ceefd742b" /> -->
+<img width="1898" height="452" alt="image" src="https://github.com/user-attachments/assets/38db28e8-b854-41e7-aeee-e6c9c351eff5" />
+<img width="1900" height="1198" alt="image" src="https://github.com/user-attachments/assets/476325af-721e-4b19-b9e3-6a3d7fd5599a" />
+<!-- <img width="1896" height="1198" alt="image" src="https://github.com/user-attachments/assets/6f8abf20-8786-4801-9714-aa4902ded4b0" /> -->
+<img width="1900" height="1198" alt="image" src="https://github.com/user-attachments/assets/bd1515b8-47a4-42b7-9b8d-f75b68e2ca1c" />
+
 
 ## Spotify API Restrictions
 
