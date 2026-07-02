@@ -14,7 +14,6 @@ import {
 } from "./services/spotify";
 import {UserProfile} from "../shared/types/UserProfile";
 import rateLimit from "express-rate-limit";
-import {Playlists} from "../shared/types/Playlist";
 
 declare module 'express-session' {
     interface SessionData {
@@ -23,7 +22,6 @@ declare module 'express-session' {
             access_token: string;
             refresh_token: string;
             profile?: UserProfile;
-            playlists?: Playlists;
         };
         callback?: string;
     }
@@ -292,10 +290,16 @@ app.get("/api/me/playlists", async (req, res) => {
     const spotify = req.session.spotify;
     if (!spotify) return res.status(401).json({error: 'unauthorized'});
 
-    if (spotify.playlists) return res.json(spotify.playlists);
+    function parseIntQuery(value: unknown, fallback: number): number {
+        if (typeof value !== "string") return fallback;
+        const parsed = Number.parseInt(value, 10);
+        return Number.isNaN(parsed) ? fallback : parsed;
+    }
 
-    const playlists = await getUserPlaylists(spotify.access_token);
-    spotify.playlists = playlists;
+    const offset = parseIntQuery(req.query.offset, 0);
+    const limit = parseIntQuery(req.query.limit, 50);
+
+    const playlists = await getUserPlaylists(spotify.access_token, offset, limit);
     res.json(playlists);
 });
 
@@ -371,9 +375,6 @@ app.post("/api/playlists/:playlistId/create-shuffle", async (req, res) => {
 
         await copyPlaylistImage(accessToken, playlist.id, newPlaylist.id);
         await addTracksToPlaylist(accessToken, newPlaylist.id, uris);
-
-        // Cache is now outdated
-        delete spotify.playlists;
 
         return res.json({
             playlistId: newPlaylist.id,

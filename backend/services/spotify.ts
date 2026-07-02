@@ -106,8 +106,8 @@ export function getProfile(accessToken: string): Promise<UserProfile> {
     return _spotifyFetchJson<UserProfile>(accessToken, "/me");
 }
 
-export function getUserPlaylists(accessToken: string): Promise<Playlists> {
-    return _spotifyFetchJson<Playlists>(accessToken, "/me/playlists");
+export function getUserPlaylists(accessToken: string, offset: number = 0, limit: number = 50): Promise<Playlists> {
+    return _spotifyFetchJson<Playlists>(accessToken, `/me/playlists?limit=${limit}&offset=${offset}`);
 }
 
 export function getPlaylist(accessToken: string, playlistId: string): Promise<Playlist> {

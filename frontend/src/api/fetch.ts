@@ -69,8 +69,8 @@ export async function fetchProfile(options?: ApiOptions): Promise<Response> {
     return _apiFetch("/api/me", options);
 }
 
-export async function fetchPlaylists(options?: ApiOptions): Promise<Response> {
-    return _apiFetch("/api/me/playlists", options);
+export async function fetchPlaylists(offset: number = 0, limit: number = 50, options?: ApiOptions): Promise<Response> {
+    return _apiFetch(`/api/me/playlists?offset=${offset}&limit=${limit}`, options);
 }
 
 export async function fetchPlaylist(playlistId: string, options?: ApiOptions): Promise<Response> {

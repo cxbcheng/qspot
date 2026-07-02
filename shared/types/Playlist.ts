@@ -1,6 +1,7 @@
 import {Artist} from "./Artist.ts";
 
 export interface Playlists {
+    next: string | null;
     items: Playlist[];
     limit: number;
 }
