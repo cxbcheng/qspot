@@ -20,9 +20,9 @@ A Spotify companion app that provides playlist tools with smart classical-music 
 
 ## Screenshots
 
-<img width="1920" height="1200" alt="App Login Page" src="https://github.com/user-attachments/assets/d7e0a2a2-df71-49f6-9acc-c52f83be1522" />
-<img width="1896" height="1198" alt="App Playlist View" src="https://github.com/user-attachments/assets/29e1629d-7b9a-4ffb-9c3e-d015f40c8b4c" />
-<img width="1920" height="1200" alt="Classical Shuffle Playlist Demo" src="https://i.imgur.com/f5mCUb6.gif" />
+<img width="1920" height="1200" alt="App Login Page" src="https://github.com/user-attachments/assets/3df7c9db-0b90-4a10-a75d-58e20f2a3e8c" />
+<img width="1896" height="1198" alt="Classical Playlist View" src="https://github.com/user-attachments/assets/cb2f419e-5391-49ed-90cb-9fae57564f95" />
+<img width="1893" height="1198" alt="Classical Playlist Shuffled" src="https://github.com/user-attachments/assets/1a87bcce-85b0-4b42-8348-0b43dfe6cc59" />
 
 ## Spotify API Restrictions
 
