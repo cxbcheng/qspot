@@ -10,6 +10,7 @@ import {PlayButton} from "../components/PlayButton.tsx";
 import {createShuffledPlaylist, fetchPlaylist, fetchProfile, attemptPlayback} from "../api/fetch.ts";
 import {Navbar} from "../components/Navbar.tsx";
 import {Alert} from "../components/Alert.tsx";
+import {useAsyncLock} from "../hooks/useAsyncLock.ts";
 
 interface ResponseObject {
     profile: UserProfile;
@@ -66,6 +67,8 @@ export function Component() {
         return quickShuffle ? classicalShuffle(initialTracks) : initialTracks;
     });
 
+    const asyncLock = useAsyncLock();
+
     useEffect(() => {
         if (quickShuffle) {
             playButtonRef.current?.focus();
@@ -105,11 +108,11 @@ export function Component() {
     }
 
     async function handlePlayShuffled() {
-        await playShuffled();
+        await asyncLock.run(() => playShuffled());
     }
 
     async function handlePlayShuffledFrom(index: number) {
-        await playShuffled(index);
+        await asyncLock.run(() => playShuffled(index));
     }
 
     return (
