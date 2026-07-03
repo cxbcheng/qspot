@@ -6,12 +6,13 @@ import {Playlist, PlaylistItem} from "../../../shared/types/Playlist.ts";
 import "../styles/playlist.css";
 import {TrackList} from "../components/TrackList.tsx";
 import {classicalShuffle} from "../../../shared/utils/shuffle.ts";
-import {useEffect, useLayoutEffect, useRef, useState} from "react";
+import React, {useEffect, useLayoutEffect, useRef, useState} from "react";
 import {PlayButton} from "../components/PlayButton.tsx";
 import {createShuffledPlaylist, fetchPlaylist, fetchProfile, attemptPlayback} from "../api/fetch.ts";
 import {Navbar} from "../components/Navbar.tsx";
 import {Alert} from "../components/Alert.tsx";
 import {useAsyncLock} from "../hooks/useAsyncLock.ts";
+import * as e from "cors";
 
 interface ResponseObject {
     profile: UserProfile;
@@ -57,7 +58,7 @@ export function Component() {
     // Reset scroll
     useLayoutEffect(() => {
         window.scrollTo(0, 0);
-    }, [location]);
+    }, [location.pathname]);
 
     const res: ResponseObject = useLoaderData<ResponseObject>();
     const playlist: Playlist = res.playlist;
@@ -66,8 +67,8 @@ export function Component() {
     const cleanDesc = sanitizeAndTransformHtml(playlist.description);
 
     const playButtonRef = useRef<HTMLButtonElement>(null);
+    const alertTargetRef = useRef<HTMLElement | null>(null);
     const quickShuffle = !!location.state?.quickShuffle;
-
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     // If quick shuffle is on, shuffle the tracks once from the original order
@@ -120,11 +121,13 @@ export function Component() {
         });
     }
 
-    async function handlePlayShuffled() {
+    async function handlePlayShuffled(e: React.MouseEvent<HTMLButtonElement>) {
+        alertTargetRef.current = e.currentTarget;
         await asyncLock.run(() => playShuffled());
     }
 
-    async function handlePlayShuffledFrom(index: number) {
+    async function handlePlayShuffledFrom(index: number, e: React.MouseEvent<HTMLButtonElement>) {
+        alertTargetRef.current = e.currentTarget;
         await asyncLock.run(() => playShuffled(index));
     }
 
@@ -135,7 +138,7 @@ export function Component() {
                     <Alert
                         message={errorMessage}
                         onDismiss={() => setErrorMessage(null)}
-                        targetRef={playButtonRef}
+                        targetRef={alertTargetRef}
                         duration={5000}
                     />
                 )}

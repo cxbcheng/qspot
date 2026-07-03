@@ -132,3 +132,21 @@
     pointer-events: none;
     margin-right: 40px;
 }
+
+/*@media (max-width: 768px) {*/
+/*    .playlist-button--shuffle,*/
+/*    .playlist-button--play {*/
+/*        width: 48px;*/
+/*        height: 48px;*/
+/*    }*/
+
+/*    .playlist-button__play-icon {*/
+/*        width: 30px;*/
+/*        height: 30px;*/
+/*    }*/
+
+/*    .playlist-button__icon {*/
+/*        width: 18px;*/
+/*        height: 18px;*/
+/*    }*/
+/*}*/

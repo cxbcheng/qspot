@@ -71,3 +71,43 @@
     line-clamp: 1;
     -webkit-box-orient: vertical;
 }
+
+@media (max-width: 768px) {
+    .track-list__header,
+    .track-number-cell {
+        display: none;
+    }
+
+    .track-row {
+        display: grid;
+        grid-template-areas:
+            "cover title"
+            "cover artist";
+        grid-template-columns: 48px 1fr;
+        gap: var(--space-1) var(--space-3);
+        padding: var(--space-2) 0;
+        border-bottom: 1px solid var(--color-border);
+        cursor: pointer;
+    }
+
+    .track-title {
+        display: contents;
+    }
+
+    .track-cover {
+        grid-area: cover;
+        width: 48px;
+        height: 48px;
+    }
+
+    .track-title > div {
+        grid-area: title;
+        align-self: end;
+    }
+
+    .track-artists {
+        grid-area: artist;
+        align-self: start;
+        font-size: var(--text-sm);
+    }
+}

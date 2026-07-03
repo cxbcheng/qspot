@@ -1,11 +1,11 @@
 import {PlaylistItem} from "../../../shared/types/Playlist.ts";
 import "../styles/track-list.css";
-import {JSX} from "react";
+import React, {JSX} from "react";
 import {TrackPlayButton} from "./TrackPlayButton.tsx";
 
 interface TrackListProps {
     tracks: PlaylistItem[];
-    handlePlayFromPosition: (index: number) => void;
+    handlePlayFromPosition: (index: number, e: React.MouseEvent<any>) => void;
 }
 
 export function TrackList({ tracks, handlePlayFromPosition }: TrackListProps): JSX.Element {
@@ -21,33 +21,31 @@ export function TrackList({ tracks, handlePlayFromPosition }: TrackListProps): J
                 (playlistItem: PlaylistItem, index: number) => {
                     const track = playlistItem.item;
 
+                    const handleRowClick = (e: React.MouseEvent<HTMLDivElement>) => {
+                        if (window.matchMedia('(max-width: 768px)').matches) {
+                            handlePlayFromPosition(index, e);
+                        }
+                    };
+
                     return (
                         <div
                             key={track.id}
                             className="track-row"
+                            onClick={handleRowClick}
                         >
                                 <span className="track-number-cell">
                                     <span className="track-index">{index + 1}</span>
                                     <TrackPlayButton
                                         isPlaying={false}
-                                        onClick={() => handlePlayFromPosition(index)}
+                                        onClick={(e) => handlePlayFromPosition(index, e)}
                                     />
                                 </span>
 
                             <div className="track-title">
-                                {track.album
-                                    .images?.[0] && (
+                                {track.album.images?.[0] && (
                                     <img
-                                        src={
-                                            track
-                                                .album
-                                                .images[0]
-                                                .url
-                                        }
-                                        alt={
-                                            track.album
-                                                .name
-                                        }
+                                        src={track.album.images[0].url}
+                                        alt={track.album.name}
                                         className="track-cover"
                                     />
                                 )}

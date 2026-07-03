@@ -82,7 +82,6 @@ export function Alert({ message, onDismiss, targetRef, duration }: AlertProps) {
             style={placementStyles}
             role="alert"
             ref={alertRef}
-            tabIndex={-1}
         >
             <svg
                 className="alert__icon"
