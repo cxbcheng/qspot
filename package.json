@@ -23,7 +23,8 @@
     "client": "vite --host 127.0.0.1",
     "server": "tsx backend/server.ts",
     "dev": "concurrently \"npm run client\" \"npm run server\"",
-    "build": "tsc && vite build",
+    "typecheck": "tsc --noEmit",
+    "build": "vite build",
     "preview": "vite preview",
     "start": "tsx backend/server.ts"
   },
