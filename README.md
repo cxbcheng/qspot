@@ -2,6 +2,7 @@
 # Classically
 
 A Spotify companion app that provides playlist tools with smart classical-music shuffling, queueing, and playlist cloning.
+
 ## Built With
 
 [![React](https://img.shields.io/badge/React-%2320232a.svg?logo=react&logoColor=%2361DAFB)](https://react.dev)
@@ -10,13 +11,17 @@ A Spotify companion app that provides playlist tools with smart classical-music 
 [![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=fff)](https://vite.dev/)
 [![Express.js](https://img.shields.io/badge/Express.js-%23404d59.svg?logo=express&logoColor=%2361DAFB)](https://expressjs.com/)
 [![Spotify](https://img.shields.io/badge/Spotify-1ED760?logo=spotify&logoColor=white)](https://developer.spotify.com/)
+
+[**View Live Demo**](https://classically.onrender.com) 
+> **Note**: Due to Spotify API restrictions, the live demo is restricted to allowlisted test accounts. See the [API Restrictions](#spotify-api-restrictions) section below to request access or run it locally.
+
 ## Features
 
 - **Classical Shuffle**: Randomizes the order of classical works using the Fisher-Yates algorithm while preserving the order of movements within each work.
 - **Classical Metadata Extraction**: Groups tracks into works by parsing Spotify metadata to extract work titles (e.g. Piano Concerto No. 2 in C Minor), opus numbers, catalogue numbers (e.g. BWV, KV, Hob.), composer name, and album context.
 - **Shuffle Preview**: Preview a shuffle ordering before playing the desired order or making a new playlist.
 - **Playlist Creation**: Generate a new Spotify playlist containing the shuffled order. The original playlist remains unchanged.
-- **Secure Authentication**: Use Spotify OAuth 2.0 along with server-side sessions so access tokens remain on the backend.
+
 
 ## Screenshots
 
@@ -33,9 +38,10 @@ A Spotify companion app that provides playlist tools with smart classical-music 
 
 Due to Spotify's [Web API quota and development policies](https://developer.spotify.com/documentation/web-api/concepts/quota-modes), Classically currently operates in **Development Mode**. As a result, only Spotify accounts explicitly added to the application's allowlist can access Spotify Web API data.
 
-These restrictions make it impractical to provide as a publicly accessible service. For this reason, Classically is distributed primarily as a GitHub project intended to be run locally with a personal Spotify Developer application.
-
 The broader impact of these policy changes on independent developers can be read [here](https://spotify.leemartin.com/).
+
+* **If you want to try the live demo**: Please reach out via the [Contact](#contact) section below with your Spotify account email, and I will gladly add you to the developer allowlist.
+* **Alternatively**: Follow the [Quick Start](#quick-start) section below to run your own instance locally.
 
 ## Quick Start
 
@@ -75,7 +81,6 @@ SESSION_SECRET=
 VITE_BACKEND_URI=http://127.0.0.1:8080
 REDIRECT_URI=http://127.0.0.1:8080/callback
 FRONTEND_URI=http://127.0.0.1:5173
-
 PORT=8080
 NODE_ENV=development
 ```
@@ -108,6 +113,6 @@ The app will be available at:
 Distributed under MIT License. See `LICENSE.txt` for more information.
 ## Contact
 
-Christian Cheng - [@cxbcheng](https://www.github.com/cxbcheng) - [LinkedIn](www.linkedin.com/in/christian-cheng-159964372)
+Christian Cheng - [@cxbcheng](https://www.github.com/cxbcheng) - [LinkedIn](www.linkedin.com/in/christian-cheng-159964372) - [christian.b.cheng@gmail.com](mailto:christianu726@gmail.com?subject=Classically%20Demo%20Allowlist%20Access)
 
 Project Link: https://github.com/cxbcheng/classically
