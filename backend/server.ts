@@ -67,6 +67,7 @@ const SPOTIFY_CREDENTIALS: SpotifyCredentials = {
 }
 
 const app = express();
+app.set("trust proxy", 1);
 
 // Allow frontend and backend connection
 app.use(
