@@ -1,3 +1,4 @@
+import {sanitizeAndTransformHtml} from "../../../shared/utils/dompurify-helper.ts";
 import {Link, useLoaderData, useLocation, useNavigate} from "react-router-dom";
 import {redirect} from "react-router";
 import {UserProfile} from "../../../shared/types/UserProfile.ts";
@@ -56,6 +57,8 @@ export function Component() {
     const res: ResponseObject = useLoaderData<ResponseObject>();
     const playlist: Playlist = res.playlist;
     const initialTracks: PlaylistItem[] = playlist.items?.items ?? [];
+
+    const cleanDesc = sanitizeAndTransformHtml(playlist.description);
 
     const playButtonRef = useRef<HTMLButtonElement>(null);
     const quickShuffle = !!location.state?.quickShuffle;
@@ -148,8 +151,9 @@ export function Component() {
                         </Link>
 
                         {playlist.description && (
-                            <p className="playlist-description">
-                                {playlist.description}
+                            <p className="playlist-description contains-hyperlink"
+                               dangerouslySetInnerHTML={{ __html: cleanDesc }}
+                            >
                             </p>
                         )}
 

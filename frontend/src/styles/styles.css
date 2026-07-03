@@ -120,10 +120,11 @@ hr {
     color: var(--color-text-muted);
 }
 
-.hyperlink {
+.hyperlink, .contains-hyperlink a {
     color: var(--color-link);
 }
 
-.hyperlink:hover {
+.hyperlink:hover, .contains-hyperlink a:hover {
     color: var(--color-link-hover);
+    text-decoration: underline;
 }
