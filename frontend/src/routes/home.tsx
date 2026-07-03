@@ -33,7 +33,7 @@ export function Component() {
     const isFetching = useRef(false);
 
     const loadMore = useCallback(async () => {
-        if (loading || !hasMore || isFetching.current) return;
+        if (loading || !hasMore || isFetching.current || playlists.length === 0) return;
 
         // Synchronous locks
         isFetching.current = true;
