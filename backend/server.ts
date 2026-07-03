@@ -14,6 +14,8 @@ import {
 } from "./services/spotify";
 import {UserProfile} from "../shared/types/UserProfile";
 import rateLimit from "express-rate-limit";
+import {fileURLToPath} from "node:url";
+import * as path from "node:path";
 
 declare module 'express-session' {
     interface SessionData {
@@ -26,6 +28,10 @@ declare module 'express-session' {
         callback?: string;
     }
 }
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const distPath = path.resolve(__dirname, "../dist");
 
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
@@ -129,10 +135,6 @@ function generateRandomString(length: number): string {
     return crypto.randomBytes(60).toString('hex').slice(0, length);
 }
 
-/**
- * GET /login
- * Redirect user to Spotify authorization page
- */
 app.get('/login', (req, res) => {
     const state = generateRandomString(16);
     req.session.state = state;
@@ -427,6 +429,13 @@ app.post('/logout', async (req, res) => {
         }
         return res.json({success: true});
     });
+});
+
+// Serve frontend
+app.use(express.static(distPath));
+
+app.get("/{*any}", (_req, res) => {
+    res.sendFile(path.join(distPath, "index.html"));
 });
 
 app.listen(PORT, () => {

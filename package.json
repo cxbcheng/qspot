@@ -24,7 +24,8 @@
     "server": "tsx backend/server.ts",
     "dev": "concurrently \"npm run client\" \"npm run server\"",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "tsx backend/server.ts"
   },
   "repository": {
     "type": "git",
