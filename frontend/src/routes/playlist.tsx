@@ -6,7 +6,7 @@ import {Playlist, PlaylistItem} from "../../../shared/types/Playlist.ts";
 import "../styles/playlist.css";
 import {TrackList} from "../components/TrackList.tsx";
 import {classicalShuffle} from "../../../shared/utils/shuffle.ts";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useLayoutEffect, useRef, useState} from "react";
 import {PlayButton} from "../components/PlayButton.tsx";
 import {createShuffledPlaylist, fetchPlaylist, fetchProfile, attemptPlayback} from "../api/fetch.ts";
 import {Navbar} from "../components/Navbar.tsx";
@@ -53,6 +53,11 @@ export async function loader({params, request}: { params: { playlistId?: string 
 export function Component() {
     const navigate = useNavigate();
     const location = useLocation();
+
+    // Reset scroll
+    useLayoutEffect(() => {
+        window.scrollTo(0, 0);
+    }, [location]);
 
     const res: ResponseObject = useLoaderData<ResponseObject>();
     const playlist: Playlist = res.playlist;
